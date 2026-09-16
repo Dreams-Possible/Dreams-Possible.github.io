@@ -8,8 +8,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = (ROOT / 'data/projects.js').read_text(encoding='utf-8')
-ENTRY = re.compile(r"\{name:'([^']+)',date:'([^']+)',category:'([^']+)',description:'([^']+)'\}")
-entries = [dict(zip(('name', 'date', 'category', 'description'), match)) for match in ENTRY.findall(SOURCE)]
+ENTRY = re.compile(r"\{name:'([^']+)',date:'([^']+)',category:'([^']+)',description:\{zh:'([^']+)',en:'([^']+)'\}\}")
+entries = [dict(zip(('name', 'date', 'category', 'description_zh', 'description_en'), match)) for match in ENTRY.findall(SOURCE)]
 names = [entry['name'] for entry in entries]
 categories = {'嵌入式与控制', '系统与设备', 'Web 与桌面', '机器人与数据', '工程工具'}
 errors = []
@@ -20,8 +20,8 @@ for entry in entries:
         errors.append(f"Invalid date: {entry['name']}")
     if entry['category'] not in categories:
         errors.append(f"Unknown category: {entry['name']}")
-    if not entry['description'].strip():
-        errors.append(f"Empty description: {entry['name']}")
+    if not entry['description_zh'].strip() or not entry['description_en'].strip():
+        errors.append(f"Missing bilingual description: {entry['name']}")
 if names and 'Dreams-Possible.github.io' in names:
     errors.append('Site repository should not be listed as a project')
 if not entries:
