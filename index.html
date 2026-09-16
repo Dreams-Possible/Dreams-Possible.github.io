@@ -1,292 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Hello World</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    /* Reset */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      scroll-behavior: smooth;
-    }
-
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #f5f7fa 0%, #e0eafc 100%);
-      color: #2c3e50;
-      min-height: 100vh;
-      overflow-x: hidden;
-      overflow-y: auto; /* Ensure vertical scrolling */
-    }
-
-    /* Navbar */
-    nav {
-      width: 100%;
-      position: fixed;
-      top: 0;
-      left: 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 20px 60px;
-      z-index: 100;
-      background: transparent;
-      transition: background-color 0.4s ease;
-    }
-
-    nav.scrolled {
-      background: rgba(255, 255, 255, 0.95);
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    }
-
-    nav .logo {
-      font-weight: 600;
-      font-size: 1.8rem;
-      color: #3498db;
-      letter-spacing: 1px;
-    }
-
-    nav ul {
-      display: flex;
-      list-style: none;
-      gap: 30px;
-    }
-
-    nav ul li a {
-      text-decoration: none;
-      color: #2c3e50;
-      font-weight: 500;
-      transition: color 0.3s ease;
-    }
-
-    nav ul li a:hover {
-      color: #3498db;
-    }
-
-    /* Hero Section */
-    .hero {
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 0 20px;
-      animation: fadeIn 1.2s ease forwards;
-    }
-
-    .hero h1 {
-      font-size: 4rem;
-      font-weight: 600;
-      color: #2c3e50;
-    }
-
-    .hero p {
-      margin-top: 20px;
-      font-size: 1.4rem;
-      color: #7f8c8d;
-    }
-
-    .hero .hello {
-      margin-top: 10px;
-      font-size: 1.8rem;
-      color: #34495e;
-      font-weight: 500;
-      background: linear-gradient(90deg, #3498db, #9b59b6, #e67e22);
-      background-size: 200% auto;
-      background-clip: text;
-      -webkit-background-clip: text;
-      color: transparent;
-      animation: shine 4s linear infinite;
-    }
-
-    .hero a.button {
-      margin-top: 40px;
-      padding: 14px 36px;
-      background-color: #3498db;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.3s ease;
-      display: inline-block;
-    }
-
-    .hero a.button:hover {
-      background-color: #2980b9;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3);
-    }
-
-    /* Projects Section */
-    .projects {
-      padding: 100px 20px 60px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 40px;
-      max-width: 1200px;
-      margin: 0 auto;
-      animation: fadeIn 1.5s ease forwards;
-    }
-
-    .card {
-      background: white;
-      border-radius: 16px;
-      padding: 30px;
-      text-align: center;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
-    }
-
-    .card h3 {
-      margin-bottom: 15px;
-      font-size: 1.5rem;
-      color: #2c3e50;
-    }
-
-    .card p {
-      font-size: 1rem;
-      color: #7f8c8d;
-      line-height: 1.5;
-    }
-
-    /* Footer */
-    footer {
-      margin-top: 60px;
-      padding: 20px;
-      text-align: center;
-      font-size: 0.9rem;
-      color: #7f8c8d;
-      border-top: 1px solid #e1e4e8;
-    }
-
-    .socials {
-      margin-top: 10px;
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-    }
-
-    .socials a {
-      color: #bdc3c7;
-      font-size: 1.4rem;
-      text-decoration: none;
-      transition: color 0.3s ease;
-    }
-
-    .socials a:hover {
-      color: #3498db;
-    }
-
-    .copyright {
-      margin-top: 10px;
-      font-size: 0.85rem;
-      color: #95a5a6;
-    }
-
-    /* Animations */
-    @keyframes fadeIn {
-      0% { opacity: 0; transform: translateY(30px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes shine {
-      to { background-position: 200% center; }
-    }
-
-    @media (max-width: 768px) {
-      nav {
-        padding: 20px 30px;
-      }
-
-      .hero h1 {
-        font-size: 3rem;
-      }
-
-      .hero p {
-        font-size: 1.1rem;
-      }
-
-      .hero .hello {
-        font-size: 1.5rem;
-      }
-    }
-  </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Mathrix 的个人博客：嵌入式、系统、机器人与交互项目。">
+  <meta property="og:title" content="Mathrix — 项目与笔记">
+  <meta property="og:description" content="把想法做成可运行的东西。浏览 Mathrix 的项目与工程记录。">
+  <title>Mathrix — 项目与笔记</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="data/projects.js"></script>
+  <script defer src="site.js"></script>
 </head>
-
-<body>
-
-  <nav id="navbar">
-    <div class="logo">Dreams</div>
-    <ul>
-      <li><a href="#home">Home</a></li>
-      <li><a href="#projects">Projects</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-  </nav>
-
-  <section class="hero" id="home">
-    <h1>Hello World</h1>
-    <div class="hello">Dreams Possible</div>
-    <p>Turning ideas into reality, beautifully.</p>
-    <a href="#projects" class="button">Explore Projects</a>
-  </section>
-
-  <section class="projects" id="projects">
-    <div class="card">
-      <h3>Innovation Lab</h3>
-      <p>Crafting breakthrough solutions for the digital age.</p>
+<body data-page="home">
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="site-header">
+    <div class="wrap nav-row">
+      <a class="brand" href="index.html" aria-label="Mathrix 首页"><span class="brand-mark">M<span class="mark-point"></span></span><span>Mathrix</span></a>
+      <nav aria-label="主导航"><a class="active" href="index.html" aria-current="page">首页</a><a href="projects.html">全部项目</a><a href="https://github.com/Dreams-Possible" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a></nav>
     </div>
-    <div class="card">
-      <h3>Design Studio</h3>
-      <p>Beautiful interfaces, seamless experiences.</p>
-    </div>
-    <div class="card">
-      <h3>Technology Hub</h3>
-      <p>Empowering growth with robust technology.</p>
-    </div>
-  </section>
+  </header>
 
-  <footer id="contact">
-    <div>© 2025 Dreams Possible.</div>
-    <div class="copyright">
-      This website is jointly operated by Mathrix and Github with all rights reserved.
-    </div>
-    <div class="socials">
-      <a href="#" title="Twitter">🐦</a>
-      <a href="#" title="GitHub">🐙</a>
-      <a href="#" title="Instagram">📷</a>
-    </div>
-  </footer>
+  <main id="main">
+    <section class="hero wrap">
+      <div class="hero-copy">
+        <p class="kicker">Mathrix / 工程实验与开源项目</p>
+        <h1>把想法做成<br><span>可运行的东西。</span></h1>
+        <p class="hero-lede">从嵌入式界面、传感器与控制，到系统改造和浏览器里的交互实验。这里记录我做过的项目，以及它们背后的尝试。</p>
+        <div class="hero-actions"><a class="button button-primary" href="projects.html">浏览全部项目 <span aria-hidden="true">↗</span></a><a class="text-link" href="https://github.com/Dreams-Possible" target="_blank" rel="noopener noreferrer">查看 GitHub</a></div>
+      </div>
+      <div class="hero-graphic" aria-hidden="true"><div class="graphic-grid"></div><div class="graphic-ring ring-one"></div><div class="graphic-ring ring-two"></div><div class="graphic-axis axis-x"></div><div class="graphic-axis axis-y"></div><span class="graphic-coordinate">x · y · z</span><span class="graphic-dot"></span></div>
+    </section>
 
-  <script>
-    // Navbar scroll effect
-    const navbar = document.getElementById('navbar');
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 60) {
-        navbar.classList.add('scrolled');
-      } else {
-        navbar.classList.remove('scrolled');
-      }
-    });
+    <section class="feature-section" aria-labelledby="feature-heading">
+      <div class="wrap">
+        <div class="section-head"><div><p class="kicker">随机漫游</p><h2 id="feature-heading">这次，看看这些项目</h2><p>每次打开首页会随机展示四个项目。没有固定榜单。</p></div><button class="shuffle-button" id="shuffle" type="button" aria-label="换一组随机项目">换一组 <span aria-hidden="true">⟳</span></button></div>
+        <div id="featured-projects" class="feature-grid" aria-live="polite"></div>
+        <a class="all-link" href="projects.html">查看全部 <span id="project-count">46</span> 个项目 <span aria-hidden="true">↗</span></a>
+      </div>
+    </section>
 
-    // Prevent the page from scrolling to the bottom initially
-    window.addEventListener('load', () => {
-      window.scrollTo(0, 0);
-    });
-  </script>
-
+    <section class="about-strip wrap" aria-labelledby="about-heading"><div><p class="kicker">关于这里</p><h2 id="about-heading">持续实验，持续记录。</h2></div><p>这个站点按项目组织内容。想找某个方向，可以在项目页按时间或类别浏览；每个条目都链接到对应的源码仓库。</p></section>
+  </main>
+  <footer class="site-footer"><div class="wrap footer-row"><span>© <span id="year"></span> Mathrix</span><span>源码与记录：<a href="https://github.com/Dreams-Possible">Dreams-Possible</a></span></div></footer>
 </body>
 </html>
