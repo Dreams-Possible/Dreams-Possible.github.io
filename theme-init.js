@@ -8,7 +8,7 @@
     language = localStorage.getItem('mathrix-language') || '';
   } catch (_) { /* Storage can be disabled; system defaults remain usable. */ }
   if (!['auto', 'light', 'dark'].includes(themeMode)) themeMode = 'auto';
-  if (!['zh', 'en'].includes(language)) language = navigator.language.toLowerCase().startsWith('en') ? 'en' : 'zh';
+  if (!['zh', 'en'].includes(language)) language = 'en';
   root.dataset.themeMode = themeMode;
   root.dataset.theme = themeMode === 'auto'
     ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')

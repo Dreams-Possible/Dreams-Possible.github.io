@@ -8,6 +8,9 @@
   <meta property="og:description" content="浏览 Mathrix 的工程实验与开源项目。">
   <title>Mathrix — 项目与笔记</title>
   <script src="theme-init.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@500;600;700&family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Serif+SC:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script defer src="data/projects.js"></script>
   <script defer src="data/i18n.js"></script>
@@ -19,13 +22,13 @@
     <div class="fog-layer fog-cyan"></div><div class="fog-layer fog-secondary"></div>
     <canvas class="weather-canvas" aria-hidden="true"></canvas>
     <div class="space-scene" aria-hidden="true">
-          <div class="scene-grid"></div>
-          <div class="scene-halo"></div>
-          <div class="scene-frame frame-far"></div>
-          <div class="scene-frame frame-mid"></div>
-          <div class="scene-frame frame-near"></div>
-          <div class="scene-trace trace-one"></div><div class="scene-trace trace-two"></div>
-          <span class="scene-point point-one"></span><span class="scene-point point-two"></span><span class="scene-point point-three"></span>
+      <div class="scene-grid"></div>
+      <div class="scene-halo"></div>
+      <div class="scene-frame frame-far"></div>
+      <div class="scene-frame frame-mid"></div>
+      <div class="scene-frame frame-near"></div>
+      <div class="scene-trace trace-one"></div><div class="scene-trace trace-two"></div>
+      <span class="scene-point point-one"></span><span class="scene-point point-two"></span><span class="scene-point point-three"></span>
     </div>
   </div>
   <a class="skip-link" href="#main" data-i18n="skip">跳到正文</a>
@@ -59,7 +62,6 @@
 
     <section class="discovery" aria-labelledby="discovery-heading">
       <div class="shell">
-        <p class="journey-title" aria-hidden="true"><span data-i18n="heroTitleLine1">把想法放进</span> <span data-i18n="heroTitleLine2">真实世界。</span></p>
         <div class="section-heading">
           <div><p class="section-index" data-i18n="discoveryIndex">随机漫游</p><h2 id="discovery-heading" data-i18n="discoveryTitle">这次，从这里开始。</h2><p data-i18n="discoveryIntro">六个随机项目，每次到访都可能遇见不同的方向。</p></div>
           <button class="shuffle-action glass-surface" id="shuffle" type="button"><span data-i18n="shuffle">换一组</span><span aria-hidden="true">⟳</span></button>
@@ -71,7 +73,7 @@
     </section>
   </main>
 
-  <details class="atmosphere-tuner"><summary class="glass-surface" data-i18n="atmosphere">氛围</summary><div class="atmosphere-panel glass-surface"><label><span data-i18n="rainControl">雨量</span><input id="rain-density" type="range" min="0" max="100" value="55"><output id="rain-value" for="rain-density">55%</output></label><label><span data-i18n="meteorControl">流星频率</span><input id="meteor-rate" type="range" min="0" max="100" value="50"><output id="meteor-value" for="meteor-rate">50%</output></label></div></details>
+  <details class="atmosphere-tuner"><summary class="glass-surface" data-i18n="atmosphere">氛围</summary><div class="atmosphere-panel glass-surface"><label><span data-i18n="rainControl">雨量</span><input id="rain-density" type="range" min="0" max="100" value="50"><output id="rain-value" for="rain-density">50%</output></label><label><span data-i18n="meteorControl">流星频率</span><input id="meteor-rate" type="range" min="0" max="100" value="50"><output id="meteor-value" for="meteor-rate">50%</output></label></div></details>
   <footer class="site-footer glass-surface"><div class="shell footer-inner"><span>© <span id="year"></span> Mathrix</span><span><span data-i18n="footerSource">源码与记录</span> <a href="https://github.com/Dreams-Possible">Dreams-Possible ↗</a></span></div></footer>
 </body>
 </html>

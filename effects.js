@@ -8,7 +8,7 @@
     rain: document.getElementById('rain-density'),
     meteors: document.getElementById('meteor-rate')
   };
-  const settings = {rain: 55, meteors: 50};
+  const settings = {rain: 50, meteors: 50};
   const random = (min, max) => min + Math.random() * (max - min);
   const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 
@@ -40,7 +40,7 @@
         x: random(-width * .1, width * 1.1),
         y: startAnywhere ? random(0, height) : random(-height * .25, -12),
         speed: random(250, 690), length: random(7, 22),
-        slant: random(-.23, -.08), opacity: random(.12, .38), width: random(.55, 1.25)
+        slant: random(-.23, -.08), opacity: random(.15, .44), width: random(.55, 1.25)
       };
     }
     function resize() {
@@ -52,30 +52,40 @@
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
       context.setTransform(ratio, 0, 0, ratio, 0, 0);
-      drops = Array.from({length: 135}, () => makeDrop(true));
+      drops = Array.from({length: 960}, () => makeDrop(true));
     }
     function draw(time) {
       frame = 0;
       if (document.hidden || reducedMotion.matches) return;
-      if (lastTime && time - lastTime < 32) { frame = requestAnimationFrame(draw); return; }
       const dt = Math.min((time - (lastTime || time)) / 1000, .05);
       lastTime = time;
       context.clearRect(0, 0, width, height);
       const dark = document.documentElement.dataset.theme === 'dark';
-      const activeDrops = Math.round(settings.rain * 1.35);
+      const palette = dark
+        ? {rain: [132, 218, 255], rainOpacity: 1, meteorTail: [84, 152, 255], meteorHead: [255, 190, 114], meteorOpacity: .92}
+        : {rain: [15, 105, 164], rainOpacity: .98, meteorTail: [74, 80, 203], meteorHead: [221, 76, 125], meteorOpacity: .84};
+      const activeDrops = Math.min(drops.length, Math.round(settings.rain * 9.6));
+      const rainBatches = Array.from({length: 15}, () => new Path2D());
       for (let index = 0; index < activeDrops; index++) {
         const drop = drops[index];
         drop.y += drop.speed * dt;
         drop.x += drop.speed * drop.slant * dt;
         if (drop.y > height + 25 || drop.x < -30) drops[index] = makeDrop(false);
-        context.strokeStyle = dark ? `rgba(157, 224, 241, ${drop.opacity})` : `rgba(39, 125, 156, ${drop.opacity * .73})`;
-        context.lineWidth = drop.width;
-        context.beginPath();
-        context.moveTo(drop.x, drop.y);
-        context.lineTo(drop.x - drop.slant * drop.length, drop.y - drop.length);
-        context.stroke();
+        const opacityBand = Math.min(4, Math.floor((drop.opacity - .15) / .06));
+        const widthBand = Math.min(2, Math.floor((drop.width - .55) / .24));
+        const path = rainBatches[opacityBand * 3 + widthBand];
+        path.moveTo(drop.x, drop.y);
+        path.lineTo(drop.x - drop.slant * drop.length, drop.y - drop.length);
       }
-      if (settings.meteors && Math.random() < dt * settings.meteors * .0032) {
+      for (let opacityBand = 0; opacityBand < 5; opacityBand++) {
+        for (let widthBand = 0; widthBand < 3; widthBand++) {
+          const path = rainBatches[opacityBand * 3 + widthBand];
+          context.strokeStyle = `rgba(${palette.rain.join(', ')}, ${(.15 + opacityBand * .06) * palette.rainOpacity})`;
+          context.lineWidth = .65 + widthBand * .28;
+          context.stroke(path);
+        }
+      }
+      if (settings.meteors && Math.random() < dt * settings.meteors * .0256) {
         meteors.push({x: random(width * .28, width * 1.12), y: random(-40, height * .52),
           vx: random(-760, -470), vy: random(230, 430), length: random(80, 155), life: 0, duration: random(.6, 1.05)});
       }
@@ -85,14 +95,15 @@
         meteor.x += meteor.vx * dt;
         meteor.y += meteor.vy * dt;
         if (meteor.life > meteor.duration) { meteors.splice(index, 1); continue; }
-        const alpha = Math.sin(Math.PI * meteor.life / meteor.duration) * (dark ? .8 : .56);
+        const alpha = Math.sin(Math.PI * meteor.life / meteor.duration) * palette.meteorOpacity;
         const tailX = meteor.x - meteor.vx / Math.hypot(meteor.vx, meteor.vy) * meteor.length;
         const tailY = meteor.y - meteor.vy / Math.hypot(meteor.vx, meteor.vy) * meteor.length;
         const glow = context.createLinearGradient(tailX, tailY, meteor.x, meteor.y);
-        glow.addColorStop(0, 'rgba(95, 211, 224, 0)');
-        glow.addColorStop(1, `rgba(129, 229, 242, ${alpha})`);
+        glow.addColorStop(0, `rgba(${palette.meteorTail.join(', ')}, 0)`);
+        glow.addColorStop(.58, `rgba(${palette.meteorTail.join(', ')}, ${alpha * .38})`);
+        glow.addColorStop(1, `rgba(${palette.meteorHead.join(', ')}, ${alpha})`);
         context.strokeStyle = glow;
-        context.lineWidth = 2;
+        context.lineWidth = 2.15;
         context.beginPath();
         context.moveTo(tailX, tailY);
         context.lineTo(meteor.x, meteor.y);
