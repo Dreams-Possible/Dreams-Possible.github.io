@@ -171,4 +171,54 @@
   document.addEventListener('visibilitychange', () => {
     document.body.classList.toggle('page-hidden', document.hidden);
   });
+
+  // Read the document's position without changing it: scrolling stays fully
+  // under the visitor's control while the opening scene follows along.
+  function setupHomeScrollJourney() {
+    const hero = document.getElementById('hero');
+    const titleLines = hero?.querySelectorAll('.hero-title > span');
+    const title = hero?.querySelector('.hero-title');
+    const heroCopy = hero?.querySelector('.hero-copy');
+    const discoveryIndex = document.querySelector('.discovery .section-index');
+    if (!hero || reducedMotion.matches || matchMedia('(max-width: 760px)').matches) return;
+    let scheduled = false;
+    const update = () => {
+      scheduled = false;
+      const available = Math.max(1, hero.offsetHeight - window.innerHeight);
+      const travelled = Math.min(Math.max(window.scrollY - hero.offsetTop, 0), available);
+      const progress = travelled / available;
+      const titleProgress = Math.min(progress / .62, 1);
+      document.body.style.setProperty('--journey', progress.toFixed(4));
+      document.body.style.setProperty('--title-journey', titleProgress.toFixed(4));
+      hero.classList.toggle('hero-scrolled', progress > .62);
+      if (title && heroCopy && titleLines?.length === 2) {
+        const titleStyle = getComputedStyle(titleLines[0]);
+        const lineHeight = parseFloat(titleStyle.lineHeight) || titleLines[0].offsetHeight;
+        const range = document.createRange();
+        range.selectNodeContents(titleLines[0]);
+        // These are independently transformed title blocks. Reserve a visible
+        // block gap so their outlines never intersect at the merged endpoint.
+        const joinX = range.getBoundingClientRect().width + Math.max(96, parseFloat(titleStyle.fontSize) * 1.2);
+        const baseTop = heroCopy.getBoundingClientRect().top + title.offsetTop;
+        const landingTop = discoveryIndex
+          ? discoveryIndex.getBoundingClientRect().top - titleLines[0].offsetHeight * .8 - 16
+          : baseTop;
+        const landingProgress = Math.min(Math.max((progress - .28) / .34, 0), 1);
+        const titleY = (landingTop - baseTop) * landingProgress;
+        document.body.style.setProperty('--title-journey-y', `${titleY}px`);
+        document.body.style.setProperty('--title-line-two-x', `${joinX * titleProgress}px`);
+        document.body.style.setProperty('--title-line-two-y', `${-lineHeight * titleProgress}px`);
+      }
+    };
+    const requestUpdate = () => {
+      if (!scheduled) {
+        scheduled = true;
+        requestAnimationFrame(update);
+      }
+    };
+    addEventListener('scroll', requestUpdate, { passive: true });
+    addEventListener('resize', requestUpdate);
+    requestUpdate();
+  }
+  setupHomeScrollJourney();
 })();
