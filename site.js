@@ -6,7 +6,6 @@
   const root = document.documentElement;
   const systemTheme = matchMedia('(prefers-color-scheme: dark)');
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-  const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
   let locale = root.lang === 'en' ? 'en' : 'zh';
   let themeMode = root.dataset.themeMode || 'auto';
   let currentView = 'timeline';
@@ -37,7 +36,7 @@
     return element;
   }
   function projectCard(project, compact) {
-    const link = node('a', compact ? 'project-card project-card-compact' : 'project-card');
+    const link = node('a', compact ? 'project-card project-card-compact glass-surface' : 'project-card glass-surface');
     link.href = project.url;
     link.target = '_blank';
     link.rel = 'noopener noreferrer';
@@ -52,34 +51,7 @@
     const action = node('span', 'project-card-action', message('repoAction'));
     action.append(node('span', 'project-card-arrow', '↗'));
     link.append(top, title, description, action);
-    if (!compact && finePointer.matches && !reducedMotion.matches) enableCardTilt(link);
     return link;
-  }
-  function enableCardTilt(card) {
-    let frame = 0;
-    let x = 0;
-    let y = 0;
-    card.addEventListener('pointermove', event => {
-      const rect = card.getBoundingClientRect();
-      x = ((event.clientX - rect.left) / rect.width - .5) * 5;
-      y = ((event.clientY - rect.top) / rect.height - .5) * -5;
-      if (frame) return;
-      frame = requestAnimationFrame(() => {
-        card.style.setProperty('--tilt-x', `${y.toFixed(2)}deg`);
-        card.style.setProperty('--tilt-y', `${x.toFixed(2)}deg`);
-        card.style.setProperty('--pointer-x', `${((x / 5) + .5) * 100}%`);
-        card.style.setProperty('--pointer-y', `${((y / -5) + .5) * 100}%`);
-        frame = 0;
-      });
-    });
-    card.addEventListener('pointerleave', () => {
-      if (frame) cancelAnimationFrame(frame);
-      frame = 0;
-      card.style.removeProperty('--tilt-x');
-      card.style.removeProperty('--tilt-y');
-      card.style.removeProperty('--pointer-x');
-      card.style.removeProperty('--pointer-y');
-    });
   }
   function chooseFeatured() {
     if (projects.length <= 6) return projects.slice();
@@ -175,40 +147,148 @@
     root.lang = locale === 'en' ? 'en' : 'zh-CN';
     if (persist) savePreference('mathrix-language', locale);
     updateText();
+    window.dispatchEvent(new Event('resize'));
   }
   function setupMotion() {
     const hero = document.getElementById('hero');
     if (!hero) return;
+    document.body.classList.add('motion-ready');
+    const stage = hero.querySelector('.hero-stage');
+    const sourceLines = [...hero.querySelectorAll('.hero-title > span')];
+    const titleLines = [...document.querySelectorAll('.journey-title > span')];
+    const discovery = document.querySelector('.discovery');
+    const desktop = matchMedia('(min-width: 761px)');
     let frame = 0;
-    let inView = true;
+    let linePaths = [];
+    let settleTimer = 0;
+    let journeyFrame = 0;
+    let animatingJourney = false;
+    let wheelIntent = 0;
+    let wheelDirection = 0;
+    let lastWheelAt = 0;
+    const clamp = value => Math.min(1, Math.max(0, value));
+    const smooth = (from, to, value) => {
+      const t = clamp((value - from) / (to - from));
+      return t * t * (3 - 2 * t);
+    };
+    function measure() {
+      titleLines.forEach(line => { line.style.transform = 'none'; });
+      const stageTop = stage.getBoundingClientRect().top;
+      const startTop = document.querySelector('.site-header').offsetHeight;
+      linePaths = titleLines.map((line, index) => {
+        const source = sourceLines[index].getBoundingClientRect();
+        const target = line.getBoundingClientRect();
+        return {
+          startX: source.left,
+          startY: source.top - stageTop + startTop,
+          endX: target.left,
+          endY: target.top + window.scrollY
+        };
+      });
+      schedule();
+    }
     function update() {
       frame = 0;
-      if (reducedMotion.matches) {
-        hero.style.setProperty('--scroll-progress', '0');
-        hero.style.setProperty('--scroll-shift', '0px');
-        hero.style.setProperty('--scene-scale', '1');
-        hero.classList.remove('motion-active');
+      if (reducedMotion.matches || !desktop.matches) {
+        titleLines.forEach(line => { line.style.transform = 'none'; });
+        document.body.style.setProperty('--scene-x', '0px');
+        document.body.style.setProperty('--scene-y', `${(window.innerHeight * .06).toFixed(1)}px`);
+        document.body.style.setProperty('--scene-zoom', '1.32');
+        document.body.style.setProperty('--copy-opacity', '1');
+        document.body.style.setProperty('--hint-opacity', '1');
+        document.body.style.setProperty('--scroll-shift', '0px');
+        hero.classList.remove('hero-scrolled');
         return;
       }
-      const rect = hero.getBoundingClientRect();
-      const progress = Math.min(1, Math.max(0, -rect.top / Math.max(rect.height * .72, 1)));
-      hero.style.setProperty('--scroll-progress', progress.toFixed(3));
-      hero.style.setProperty('--scroll-shift', `${(-progress * 62).toFixed(1)}px`);
-      hero.style.setProperty('--scene-scale', (1 + progress * .16).toFixed(3));
-      hero.classList.toggle('motion-active', inView && !document.hidden);
+      const end = Math.max(linePaths[0].endY - window.innerHeight * .27, 1);
+      const progress = clamp(window.scrollY / end);
+      const morph = smooth(0, 1, progress);
+      const join = smooth(.02, .45, progress);
+      titleLines.forEach((line, index) => {
+        const path = linePaths[index];
+        if (!path) return;
+        const x = (path.startX - path.endX) * (1 - (index ? join : morph));
+        const y = (path.startY - (path.endY - window.scrollY)) * (1 - morph);
+        line.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
+      });
+      document.body.style.setProperty('--journey', progress.toFixed(3));
+      document.body.style.setProperty('--scene-x', `${(-window.innerWidth * .09 * smooth(0, 1, progress)).toFixed(1)}px`);
+      document.body.style.setProperty('--scene-y', `${(window.innerHeight * (.06 + .01 * smooth(0, 1, progress))).toFixed(1)}px`);
+      document.body.style.setProperty('--scene-zoom', (1.32 + .23 * smooth(0, 1, progress)).toFixed(3));
+      document.body.style.setProperty('--copy-opacity', (1 - smooth(.03, .32, progress)).toFixed(3));
+      document.body.style.setProperty('--hint-opacity', (1 - smooth(0, .28, progress)).toFixed(3));
+      document.body.style.setProperty('--scroll-shift', `${(110 * smooth(0, .6, progress)).toFixed(1)}px`);
+      hero.classList.toggle('hero-scrolled', progress > .65);
     }
     function schedule() {
       if (!frame) frame = requestAnimationFrame(update);
     }
-    const observer = new IntersectionObserver(entries => {
-      inView = entries[0].isIntersecting;
-      schedule();
+    function sectionTop() {
+      return Math.round(discovery.getBoundingClientRect().top + window.scrollY);
+    }
+    function snapTo(bottom) {
+      clearTimeout(settleTimer);
+      cancelAnimationFrame(journeyFrame);
+      const start = window.scrollY;
+      const target = bottom ? sectionTop() : 0;
+      if (reducedMotion.matches || Math.abs(target - start) < 2) {
+        animatingJourney = false;
+        window.scrollTo({top: target, behavior: 'instant'});
+        return;
+      }
+      animatingJourney = true;
+      const duration = 1450;
+      let startedAt = 0;
+      function step(time) {
+        if (!startedAt) startedAt = time;
+        const progress = Math.min(1, (time - startedAt) / duration);
+        const eased = progress < .5 ? 4 * progress ** 3 : 1 - (-2 * progress + 2) ** 3 / 2;
+        window.scrollTo({top: start + (target - start) * eased, behavior: 'instant'});
+        if (progress < 1) journeyFrame = requestAnimationFrame(step);
+        else { journeyFrame = 0; animatingJourney = false; }
+      }
+      journeyFrame = requestAnimationFrame(step);
+    }
+    function settle() {
+      clearTimeout(settleTimer);
+      if (!desktop.matches || animatingJourney) return;
+      settleTimer = setTimeout(() => {
+        const end = sectionTop();
+        if (window.scrollY > 45 && window.scrollY < end - 45) snapTo(window.scrollY >= end * .42);
+      }, 240);
+    }
+    window.addEventListener('wheel', event => {
+      if (!desktop.matches || event.ctrlKey || event.target.closest('.atmosphere-tuner')) return;
+      const end = sectionTop();
+      const inJourney = window.scrollY < end - 35;
+      if (animatingJourney) { event.preventDefault(); return; }
+      if ((event.deltaY > 0 && inJourney) || (event.deltaY < 0 && window.scrollY > 20 && window.scrollY <= end + 35)) {
+        event.preventDefault();
+        const now = performance.now();
+        const direction = Math.sign(event.deltaY);
+        if (direction !== wheelDirection || now - lastWheelAt > 500) wheelIntent = 0;
+        wheelDirection = direction;
+        lastWheelAt = now;
+        const amount = event.deltaMode === 1 ? 18 : event.deltaMode === 2 ? window.innerHeight : 1;
+        wheelIntent += Math.abs(event.deltaY * amount);
+        if (wheelIntent >= 140) { wheelIntent = 0; snapTo(direction > 0); }
+      }
+    }, {passive: false});
+    window.addEventListener('keydown', event => {
+      if (!desktop.matches || event.altKey || event.ctrlKey || event.metaKey ||
+          event.target.closest('input, select, textarea, [contenteditable]')) return;
+      const end = sectionTop();
+      if (event.key === 'ArrowDown' && window.scrollY < end - 35) {
+        event.preventDefault(); snapTo(true);
+      } else if (event.key === 'ArrowUp' && window.scrollY > 20 && window.scrollY <= end + 35) {
+        event.preventDefault(); snapTo(false);
+      }
     });
-    observer.observe(hero);
-    window.addEventListener('scroll', schedule, {passive: true});
-    document.addEventListener('visibilitychange', schedule);
-    reducedMotion.addEventListener('change', schedule);
-    schedule();
+    window.addEventListener('scroll', () => { schedule(); settle(); }, {passive: true});
+    window.addEventListener('resize', measure);
+    reducedMotion.addEventListener('change', measure);
+    desktop.addEventListener('change', measure);
+    measure();
   }
 
   const year = document.getElementById('year');
@@ -230,4 +310,7 @@
     });
   });
   setupMotion();
+  document.addEventListener('visibilitychange', () => {
+    document.body.classList.toggle('page-hidden', document.hidden);
+  });
 })();
