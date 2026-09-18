@@ -15,65 +15,53 @@
     narrative: document.getElementById('narrative-enabled')
   };
   const settings = {rain: 50, meteors: 50, fog: root.dataset.fog !== 'off', rainEnabled: root.dataset.rain !== 'off', meteorsEnabled: root.dataset.meteors !== 'off', pointer: root.dataset.pointer !== 'off', narrative: root.dataset.narrative !== 'off'};
+  const toggleKeys = {fog: 'fog', rainEnabled: 'rain-enabled', meteorsEnabled: 'meteors-enabled', pointer: 'pointer', narrative: 'narrative'};
   const random = (min, max) => min + Math.random() * (max - min);
   const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+  function setToggle(key, enabled, persist) {
+    settings[key] = enabled;
+    if (controls[key]) controls[key].checked = enabled;
+    root.dataset[toggleKeys[key].replace('-enabled', '')] = enabled ? 'on' : 'off';
+    if (persist) {
+      try { localStorage.setItem(`mathrix-${toggleKeys[key]}`, enabled ? 'on' : 'off'); } catch (_) { /* Storage is optional. */ }
+    }
+  }
+  function setRange(key, value, persist) {
+    settings[key] = value;
+    if (controls[key]) controls[key].value = String(value);
+    const output = document.getElementById(key === 'rain' ? 'rain-value' : 'meteor-value');
+    if (output) output.value = `${value}%`;
+    if (persist) {
+      try { localStorage.setItem(`mathrix-${key}`, String(value)); } catch (_) { /* Storage is optional. */ }
+    }
+  }
 
   for (const [key, input] of Object.entries(controls)) {
     if (!input) continue;
-    if (['fog', 'rainEnabled', 'meteorsEnabled', 'pointer', 'narrative'].includes(key)) {
-      const preferenceKey = key.replace(/([A-Z])/g, '-$1').toLowerCase();
-      const dataKey = preferenceKey.replace('-enabled', '');
-      try { settings[key] = localStorage.getItem(`mathrix-${preferenceKey}`) !== 'off'; } catch (_) { /* Storage is optional. */ }
-      input.checked = settings[key];
-      root.dataset[dataKey] = settings[key] ? 'on' : 'off';
+    if (key in toggleKeys) {
+      let enabled = settings[key];
+      try { enabled = localStorage.getItem(`mathrix-${toggleKeys[key]}`) !== 'off'; } catch (_) { /* Storage is optional. */ }
+      setToggle(key, enabled, false);
       input.addEventListener('change', () => {
-        settings[key] = input.checked;
-        root.dataset[dataKey] = settings[key] ? 'on' : 'off';
-        try {
-          localStorage.setItem(`mathrix-${preferenceKey}`, settings[key] ? 'on' : 'off');
-        } catch (_) { /* Storage is optional. */ }
+        setToggle(key, input.checked, true);
         window.dispatchEvent(new Event('mathrix-motionchange'));
       });
       continue;
     }
     try {
-      const saved = Number(localStorage.getItem(`mathrix-${key}`));
-      if (Number.isFinite(saved) && localStorage.getItem(`mathrix-${key}`) !== null) settings[key] = clamp(saved, 0, 100);
+      const saved = localStorage.getItem(`mathrix-${key}`);
+      if (saved !== null && Number.isFinite(Number(saved))) settings[key] = clamp(Number(saved), 0, 100);
     } catch (_) { /* Preferences remain available in this session. */ }
-    input.value = String(settings[key]);
-    const output = document.getElementById(key === 'rain' ? 'rain-value' : 'meteor-value');
-    if (output) output.value = `${settings[key]}%`;
+    setRange(key, settings[key], false);
     input.addEventListener('input', () => {
-      settings[key] = Number(input.value);
-      if (output) output.value = `${settings[key]}%`;
-      try { localStorage.setItem(`mathrix-${key}`, String(settings[key])); } catch (_) { /* Storage is optional. */ }
+      setRange(key, Number(input.value), true);
     });
   }
 
   document.getElementById('reset-atmosphere')?.addEventListener('click', () => {
-    const featureDefaults = {
-      fog: ['fog-enabled', 'fog'],
-      rain: ['rain-enabled', 'rain-enabled'],
-      meteors: ['meteors-enabled', 'meteors-enabled'],
-      pointer: ['pointer-enabled', 'pointer'],
-      narrative: ['narrative-enabled', 'narrative']
-    };
-    settings.rain = 50;
-    settings.meteors = 50;
-    for (const [dataKey, [controlKey, storageKey]] of Object.entries(featureDefaults)) {
-      root.dataset[dataKey] = 'on';
-      if (controlKey === 'fog-enabled') controls.fog.checked = true;
-      else controls[controlKey.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase())].checked = true;
-      try { localStorage.setItem(`mathrix-${storageKey}`, 'on'); } catch (_) { /* Storage is optional. */ }
-    }
-    controls.rain.value = '50';
-    controls.meteors.value = '50';
-    document.getElementById('rain-value').value = '50%';
-    document.getElementById('meteor-value').value = '50%';
-    try {
-      localStorage.setItem('mathrix-rain', '50');
-      localStorage.setItem('mathrix-meteors', '50');
-    } catch (_) { /* Storage is optional. */ }
+    for (const key of Object.keys(toggleKeys)) setToggle(key, true, true);
+    setRange('rain', 50, true);
+    setRange('meteors', 50, true);
     window.dispatchEvent(new Event('mathrix-motionchange'));
   });
 

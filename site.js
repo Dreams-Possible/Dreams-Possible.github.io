@@ -179,24 +179,40 @@
     const titleLines = hero?.querySelectorAll('.hero-title > span');
     const title = hero?.querySelector('.hero-title');
     const heroCopy = hero?.querySelector('.hero-copy');
-    const discoveryIndex = document.querySelector('.discovery .section-index');
-    if (!hero || reducedMotion.matches || matchMedia('(max-width: 760px)').matches) return;
+    const settledSlot = document.querySelector('.settled-title-slot');
+    const narrowScreen = matchMedia('(max-width: 760px)');
+    if (!hero || !title || !settledSlot || titleLines?.length !== 2) return;
     let scheduled = false;
     let journeyGeometry = null;
+    const resetTitle = () => {
+      document.body.classList.remove('title-settled');
+      title.removeAttribute('aria-hidden');
+      settledSlot.setAttribute('aria-hidden', 'true');
+    };
     const measureJourney = () => {
+      if (root.dataset.narrative === 'off' || reducedMotion.matches || narrowScreen.matches) return;
       const available = Math.max(1, hero.offsetHeight - window.innerHeight);
-      const baseTop = title && heroCopy ? heroCopy.getBoundingClientRect().top + title.offsetTop : 0;
+      const baseTop = heroCopy.offsetTop + title.offsetTop;
       const landingScroll = hero.offsetTop + available * .62;
-      const lineHeight = titleLines?.[0]?.offsetHeight || 0;
-      const landingTop = discoveryIndex ? discoveryIndex.getBoundingClientRect().top + window.scrollY - landingScroll - lineHeight * .8 - 16 : baseTop;
-      journeyGeometry = {available, baseTop, landingScroll, landingY: landingTop - baseTop};
+      const lineHeight = parseFloat(getComputedStyle(titleLines[0]).lineHeight) || titleLines[0].offsetHeight;
+      const scale = new DOMMatrixReadOnly(getComputedStyle(title).transform).a || 1;
+      const range = document.createRange();
+      range.selectNodeContents(titleLines[0]);
+      const joinX = range.getBoundingClientRect().width / scale + Math.max(24, parseFloat(getComputedStyle(titleLines[0]).fontSize) * .35);
+      document.body.style.setProperty('--settled-title-height', `${lineHeight * .8}px`);
+      document.body.style.setProperty('--title-line-two-x', `${joinX}px`);
+      document.body.style.setProperty('--title-line-two-y', `${-lineHeight}px`);
+      const settledTop = settledSlot.getBoundingClientRect().top + window.scrollY;
+      journeyGeometry = {available, landingY: settledTop - landingScroll - baseTop, joinX, lineHeight};
     };
     const update = () => {
       scheduled = false;
-      if (root.dataset.narrative === 'off') {
+      if (root.dataset.narrative === 'off' || reducedMotion.matches || narrowScreen.matches) {
+        resetTitle();
         document.body.style.setProperty('--journey', '0');
         document.body.style.setProperty('--title-journey', '0');
         document.body.style.setProperty('--title-journey-y', '0px');
+        document.body.style.setProperty('--support-copy-y', '0px');
         document.body.style.setProperty('--title-line-two-x', '0px');
         document.body.style.setProperty('--title-line-two-y', '0px');
         hero.classList.remove('hero-scrolled');
@@ -210,24 +226,15 @@
       document.body.style.setProperty('--journey', progress.toFixed(4));
       document.body.style.setProperty('--title-journey', titleProgress.toFixed(4));
       hero.classList.toggle('hero-scrolled', progress > .62);
-      if (title && heroCopy && titleLines?.length === 2) {
-        const titleStyle = getComputedStyle(titleLines[0]);
-        const lineHeight = parseFloat(titleStyle.lineHeight) || titleLines[0].offsetHeight;
-        const range = document.createRange();
-        range.selectNodeContents(titleLines[0]);
-        // These are independently transformed title blocks. Reserve a visible
-        // block gap so their outlines never intersect at the merged endpoint.
-        const joinX = range.getBoundingClientRect().width + Math.max(96, parseFloat(titleStyle.fontSize) * 1.2);
-        const landingProgress = Math.min(Math.max((progress - .28) / .34, 0), 1);
-        const titleY = progress < .62
-          ? geometry.landingY * landingProgress
-          : rawTravelled < geometry.available
-            ? geometry.landingY - (window.scrollY - geometry.landingScroll)
-            : geometry.landingY - (geometry.available - geometry.landingScroll + hero.offsetTop);
-        document.body.style.setProperty('--title-journey-y', `${titleY}px`);
-        document.body.style.setProperty('--title-line-two-x', `${joinX * titleProgress}px`);
-        document.body.style.setProperty('--title-line-two-y', `${-lineHeight * titleProgress}px`);
-      }
+      const settled = progress >= .62;
+      document.body.classList.toggle('title-settled', settled);
+      title.setAttribute('aria-hidden', String(settled));
+      settledSlot.setAttribute('aria-hidden', String(!settled));
+      const landingProgress = Math.min(Math.max((progress - .28) / .34, 0), 1);
+      document.body.style.setProperty('--title-journey-y', `${geometry.landingY * landingProgress}px`);
+      document.body.style.setProperty('--support-copy-y', `${-travelled}px`);
+      document.body.style.setProperty('--title-line-two-x', `${geometry.joinX * titleProgress}px`);
+      document.body.style.setProperty('--title-line-two-y', `${-geometry.lineHeight * titleProgress}px`);
     };
     const requestUpdate = () => {
       if (!scheduled) {
@@ -240,7 +247,12 @@
       measureJourney();
       requestUpdate();
     });
-    addEventListener('mathrix-motionchange', requestUpdate);
+    addEventListener('mathrix-motionchange', () => {
+      measureJourney();
+      requestUpdate();
+    });
+    reducedMotion.addEventListener('change', () => { measureJourney(); requestUpdate(); });
+    document.fonts?.ready.then(() => { measureJourney(); requestUpdate(); });
     measureJourney();
     requestUpdate();
   }
