@@ -179,9 +179,10 @@
     const titleLines = hero?.querySelectorAll('.hero-title > span');
     const title = hero?.querySelector('.hero-title');
     const heroCopy = hero?.querySelector('.hero-copy');
+    const heroStage = hero?.querySelector('.hero-stage');
     const settledSlot = document.querySelector('.settled-title-slot');
     const narrowScreen = matchMedia('(max-width: 760px)');
-    if (!hero || !title || !settledSlot || titleLines?.length !== 2) return;
+    if (!hero || !heroStage || !title || !settledSlot || titleLines?.length !== 2) return;
     let scheduled = false;
     let journeyGeometry = null;
     const resetTitle = () => {
@@ -191,7 +192,7 @@
     };
     const measureJourney = () => {
       if (root.dataset.narrative === 'off' || reducedMotion.matches || narrowScreen.matches) return;
-      const available = Math.max(1, hero.offsetHeight - window.innerHeight);
+      const available = Math.max(1, hero.offsetHeight - heroStage.offsetHeight);
       const baseTop = heroCopy.offsetTop + title.offsetTop;
       const landingScroll = hero.offsetTop + available * .62;
       const lineHeight = parseFloat(getComputedStyle(titleLines[0]).lineHeight) || titleLines[0].offsetHeight;
