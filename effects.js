@@ -3,17 +3,39 @@
 
   const canvas = document.querySelector('.weather-canvas');
   const context = canvas?.getContext('2d');
+  const root = document.documentElement;
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   const controls = {
     rain: document.getElementById('rain-density'),
-    meteors: document.getElementById('meteor-rate')
+    meteors: document.getElementById('meteor-rate'),
+    fog: document.getElementById('fog-enabled'),
+    rainEnabled: document.getElementById('rain-enabled'),
+    meteorsEnabled: document.getElementById('meteors-enabled'),
+    pointer: document.getElementById('pointer-enabled'),
+    narrative: document.getElementById('narrative-enabled')
   };
-  const settings = {rain: 50, meteors: 50};
+  const settings = {rain: 50, meteors: 50, fog: root.dataset.fog !== 'off', rainEnabled: root.dataset.rain !== 'off', meteorsEnabled: root.dataset.meteors !== 'off', pointer: root.dataset.pointer !== 'off', narrative: root.dataset.narrative !== 'off'};
   const random = (min, max) => min + Math.random() * (max - min);
   const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 
   for (const [key, input] of Object.entries(controls)) {
     if (!input) continue;
+    if (['fog', 'rainEnabled', 'meteorsEnabled', 'pointer', 'narrative'].includes(key)) {
+      const preferenceKey = key.replace(/([A-Z])/g, '-$1').toLowerCase();
+      const dataKey = preferenceKey.replace('-enabled', '');
+      try { settings[key] = localStorage.getItem(`mathrix-${preferenceKey}`) !== 'off'; } catch (_) { /* Storage is optional. */ }
+      input.checked = settings[key];
+      root.dataset[dataKey] = settings[key] ? 'on' : 'off';
+      input.addEventListener('change', () => {
+        settings[key] = input.checked;
+        root.dataset[dataKey] = settings[key] ? 'on' : 'off';
+        try {
+          localStorage.setItem(`mathrix-${preferenceKey}`, settings[key] ? 'on' : 'off');
+        } catch (_) { /* Storage is optional. */ }
+        window.dispatchEvent(new Event('mathrix-motionchange'));
+      });
+      continue;
+    }
     try {
       const saved = Number(localStorage.getItem(`mathrix-${key}`));
       if (Number.isFinite(saved) && localStorage.getItem(`mathrix-${key}`) !== null) settings[key] = clamp(saved, 0, 100);
@@ -27,6 +49,33 @@
       try { localStorage.setItem(`mathrix-${key}`, String(settings[key])); } catch (_) { /* Storage is optional. */ }
     });
   }
+
+  document.getElementById('reset-atmosphere')?.addEventListener('click', () => {
+    const featureDefaults = {
+      fog: ['fog-enabled', 'fog'],
+      rain: ['rain-enabled', 'rain-enabled'],
+      meteors: ['meteors-enabled', 'meteors-enabled'],
+      pointer: ['pointer-enabled', 'pointer'],
+      narrative: ['narrative-enabled', 'narrative']
+    };
+    settings.rain = 50;
+    settings.meteors = 50;
+    for (const [dataKey, [controlKey, storageKey]] of Object.entries(featureDefaults)) {
+      root.dataset[dataKey] = 'on';
+      if (controlKey === 'fog-enabled') controls.fog.checked = true;
+      else controls[controlKey.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase())].checked = true;
+      try { localStorage.setItem(`mathrix-${storageKey}`, 'on'); } catch (_) { /* Storage is optional. */ }
+    }
+    controls.rain.value = '50';
+    controls.meteors.value = '50';
+    document.getElementById('rain-value').value = '50%';
+    document.getElementById('meteor-value').value = '50%';
+    try {
+      localStorage.setItem('mathrix-rain', '50');
+      localStorage.setItem('mathrix-meteors', '50');
+    } catch (_) { /* Storage is optional. */ }
+    window.dispatchEvent(new Event('mathrix-motionchange'));
+  });
 
   if (context) {
     let width = 0;
@@ -56,7 +105,7 @@
     }
     function draw(time) {
       frame = 0;
-      if (document.hidden || reducedMotion.matches) return;
+      if (document.hidden || reducedMotion.matches || root.dataset.rain === 'off' && root.dataset.meteors === 'off') return;
       const dt = Math.min((time - (lastTime || time)) / 1000, .05);
       lastTime = time;
       context.clearRect(0, 0, width, height);
@@ -64,7 +113,7 @@
       const palette = dark
         ? {rain: [132, 218, 255], rainOpacity: 1, meteorTail: [84, 152, 255], meteorHead: [255, 190, 114], meteorOpacity: .92}
         : {rain: [15, 105, 164], rainOpacity: .98, meteorTail: [74, 80, 203], meteorHead: [221, 76, 125], meteorOpacity: .84};
-      const activeDrops = Math.min(drops.length, Math.round(settings.rain * 9.6));
+      const activeDrops = root.dataset.rain === 'off' ? 0 : Math.min(drops.length, Math.round(settings.rain * 9.6));
       const rainBatches = Array.from({length: 15}, () => new Path2D());
       for (let index = 0; index < activeDrops; index++) {
         const drop = drops[index];
@@ -85,7 +134,7 @@
           context.stroke(path);
         }
       }
-      if (settings.meteors && Math.random() < dt * settings.meteors * .0256) {
+      if (root.dataset.meteors !== 'off' && settings.meteors && Math.random() < dt * settings.meteors * .0256) {
         meteors.push({x: random(width * .28, width * 1.12), y: random(-40, height * .52),
           vx: random(-760, -470), vy: random(230, 430), length: random(80, 155), life: 0, duration: random(.6, 1.05)});
       }
@@ -115,11 +164,12 @@
       if (frame) cancelAnimationFrame(frame);
       context.clearRect(0, 0, width, height);
       lastTime = 0;
-      if (!document.hidden && !reducedMotion.matches) frame = requestAnimationFrame(draw);
+      if (!document.hidden && !reducedMotion.matches && (root.dataset.rain !== 'off' || root.dataset.meteors !== 'off')) frame = requestAnimationFrame(draw);
     }
     resize();
     restart();
     window.addEventListener('resize', () => { resize(); restart(); });
+    window.addEventListener('mathrix-motionchange', restart);
     document.addEventListener('visibilitychange', restart);
     reducedMotion.addEventListener('change', restart);
   }
@@ -139,6 +189,7 @@
   }
   function updateGlass() {
     lightFrame = 0;
+    if (root.dataset.pointer === 'off') return;
     for (const surface of document.querySelectorAll('.glass-surface')) {
       const light = surface.querySelector(':scope > .glass-light');
       if (!light) continue;
