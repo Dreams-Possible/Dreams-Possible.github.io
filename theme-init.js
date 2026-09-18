@@ -10,13 +10,6 @@
   } catch (_) { /* Storage can be disabled; system defaults remain usable. */ }
   if (!['auto', 'light', 'dark'].includes(themeMode)) themeMode = 'auto';
   if (!['zh', 'en'].includes(language)) language = 'en';
-  try {
-    if (localStorage.getItem('mathrix-performance-profiled') && !localStorage.getItem('mathrix-motion-user-configured')) {
-      featureKeys.forEach(key => localStorage.removeItem(`mathrix-${key}`));
-    }
-    localStorage.removeItem('mathrix-performance-profiled');
-    localStorage.removeItem('mathrix-motion-user-configured');
-  } catch (_) { /* Storage can be disabled; defaults remain on. */ }
   root.dataset.themeMode = themeMode;
   root.dataset.theme = themeMode === 'auto'
     ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')

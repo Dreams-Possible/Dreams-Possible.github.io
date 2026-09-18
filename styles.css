@@ -433,6 +433,7 @@ body[data-page="home"] {
   --title-journey-scale: calc(1 - var(--title-journey) * .2);
   --title-line-two-x: 0px;
   --title-line-two-y: 0px;
+  --support-copy-y: 0px;
   --scene-journey-x: calc(var(--journey) * -12vw);
   --scene-journey-y: calc(6vh + var(--journey) * 10vh);
   --scene-journey-zoom: calc(1.32 + var(--journey) * .18);
@@ -451,9 +452,36 @@ body[data-page="home"] .hero-title > span:last-child {
   transform: translate3d(var(--title-line-two-x), var(--title-line-two-y), 0);
   will-change: transform;
 }
+body[data-page="home"] .settled-title-slot {
+  position: relative;
+  height: var(--settled-title-height, 0px);
+  margin-bottom: 16px;
+  visibility: hidden;
+}
+body[data-page="home"] .settled-title {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: max-content;
+  margin: 0;
+  color: var(--text-primary);
+  font-size: clamp(3.15rem, 5.8vw, 5.9rem);
+  font-weight: 780;
+  letter-spacing: -.085em;
+  line-height: 1.16;
+  text-wrap: nowrap;
+  transform: scale(.8);
+  transform-origin: top left;
+}
+body[data-page="home"] .settled-title > span:last-child { color: var(--accent-strong); transform: translate3d(var(--title-line-two-x), var(--title-line-two-y), 0); }
+body[data-page="home"].title-settled .settled-title-slot { visibility: visible; }
+body[data-page="home"].title-settled .hero-copy > .hero-title { visibility: hidden; }
 body[data-page="home"] .hero-copy > .section-index,
 body[data-page="home"] .hero-intro,
-body[data-page="home"] .hero-actions { opacity: var(--support-copy-opacity); }
+body[data-page="home"] .hero-actions {
+  opacity: var(--support-copy-opacity);
+  transform: translate3d(0, var(--support-copy-y), 0);
+}
 body[data-page="home"] .space-scene { --scene-x: var(--scene-journey-x); --scene-y: var(--scene-journey-y); --scene-zoom: var(--scene-journey-zoom); }
 body[data-page="home"] .scene-halo,
 body[data-page="home"] .frame-near,
@@ -465,6 +493,7 @@ body[data-page="home"] .discovery {
 }
 body[data-page="home"] .discovery::before { display: none; }
 @media (max-width: 760px) {
+  body[data-page="home"] .settled-title-slot { display: none; }
   body[data-page="home"] .hero { height: auto; min-height: 0; }
   body[data-page="home"] .hero-stage { position: relative; height: auto; min-height: 0; }
   body[data-page="home"] .hero-layout { min-height: 0; }
@@ -473,6 +502,7 @@ body[data-page="home"] .discovery::before { display: none; }
   body[data-page="home"] .discovery { margin-top: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
+  body[data-page="home"] .settled-title-slot { display: none; }
   body[data-page="home"] .hero { height: auto; min-height: 0; }
   body[data-page="home"] .hero-stage { position: relative; height: auto; min-height: 0; }
   body[data-page="home"] .hero-title { transform: none; }
@@ -507,6 +537,7 @@ body[data-page="home"] .scene-frame { -webkit-backdrop-filter: none; backdrop-fi
 :root[data-narrative="off"] body[data-page="home"] .hero-layout { min-height: 0; }
 :root[data-narrative="off"] body[data-page="home"] .hero-title,
 :root[data-narrative="off"] body[data-page="home"] .hero-title > span:last-child { transform: none; }
+:root[data-narrative="off"] body[data-page="home"] .settled-title-slot { display: none; }
 :root[data-narrative="off"] body[data-page="home"] .hero-copy > .section-index,
 :root[data-narrative="off"] body[data-page="home"] .hero-intro,
 :root[data-narrative="off"] body[data-page="home"] .hero-actions { opacity: 1; }
