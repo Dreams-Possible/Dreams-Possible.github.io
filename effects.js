@@ -12,16 +12,17 @@
     rainEnabled: document.getElementById('rain-enabled'),
     meteorsEnabled: document.getElementById('meteors-enabled'),
     pointer: document.getElementById('pointer-enabled'),
+    sceneMotion: document.getElementById('scene-motion-enabled'),
     narrative: document.getElementById('narrative-enabled')
   };
-  const settings = {rain: 50, meteors: 50, fog: root.dataset.fog !== 'off', rainEnabled: root.dataset.rain !== 'off', meteorsEnabled: root.dataset.meteors !== 'off', pointer: root.dataset.pointer !== 'off', narrative: root.dataset.narrative !== 'off'};
-  const toggleKeys = {fog: 'fog', rainEnabled: 'rain-enabled', meteorsEnabled: 'meteors-enabled', pointer: 'pointer', narrative: 'narrative'};
+  const settings = {rain: 50, meteors: 50, fog: root.dataset.fog !== 'off', rainEnabled: root.dataset.rain !== 'off', meteorsEnabled: root.dataset.meteors !== 'off', pointer: root.dataset.pointer !== 'off', sceneMotion: root.dataset.sceneMotion !== 'off', narrative: root.dataset.narrative !== 'off'};
+  const toggleKeys = {fog: 'fog', rainEnabled: 'rain-enabled', meteorsEnabled: 'meteors-enabled', pointer: 'pointer', sceneMotion: 'scene-motion', narrative: 'narrative'};
   const random = (min, max) => min + Math.random() * (max - min);
   const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
   function setToggle(key, enabled, persist) {
     settings[key] = enabled;
     if (controls[key]) controls[key].checked = enabled;
-    root.dataset[toggleKeys[key].replace('-enabled', '')] = enabled ? 'on' : 'off';
+    root.dataset[key === 'sceneMotion' ? key : toggleKeys[key].replace('-enabled', '')] = enabled ? 'on' : 'off';
     if (persist) {
       try { localStorage.setItem(`mathrix-${toggleKeys[key]}`, enabled ? 'on' : 'off'); } catch (_) { /* Storage is optional. */ }
     }

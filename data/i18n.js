@@ -2,7 +2,7 @@ window.MATHRIX_I18N = {
   zh: {
     skip: '跳到正文', homeAria: 'Mathrix 首页', navLabel: '主导航', navHome: '首页', navProjects: '全部项目',
     languageLabel: '语言', themeLabel: '主题', themeAuto: '跟随系统', themeLight: '浅色', themeDark: '深色',
-    atmosphere: '氛围', rainControl: '雨量', meteorControl: '流星频率', fogControl: '雾气', rainToggle: '雨滴', meteorToggle: '流星', pointerControl: '指针光场', narrativeControl: '滚动叙事', resetAtmosphere: '恢复默认',
+    atmosphere: '氛围', rainControl: '雨量', meteorControl: '流星频率', fogControl: '雾气', rainToggle: '雨滴', meteorToggle: '流星', pointerControl: '指针光场', sceneMotionControl: '线框呼吸', narrativeControl: '滚动叙事', resetAtmosphere: '恢复默认',
     heroIndex: '工程实验 / 持续记录', heroTitleLine1: '把想法放进', heroTitleLine2: '真实世界。',
     heroIntro: '从嵌入式界面到空间交互，从传感器与控制到系统改造。这里记录项目如何从问题走向可运行的答案。',
     heroAction: '探索全部项目', githubAction: '在 GitHub 查看源码', scrollHint: '向下探索',
@@ -25,7 +25,7 @@ window.MATHRIX_I18N = {
   en: {
     skip: 'Skip to content', homeAria: 'Mathrix home', navLabel: 'Main navigation', navHome: 'Home', navProjects: 'All projects',
     languageLabel: 'Language', themeLabel: 'Theme', themeAuto: 'System', themeLight: 'Light', themeDark: 'Dark',
-    atmosphere: 'Atmosphere', rainControl: 'Rain', meteorControl: 'Meteors', fogControl: 'Fog', rainToggle: 'Rain', meteorToggle: 'Meteors', pointerControl: 'Pointer light', narrativeControl: 'Scroll narrative', resetAtmosphere: 'Restore defaults',
+    atmosphere: 'Atmosphere', rainControl: 'Rain', meteorControl: 'Meteors', fogControl: 'Fog', rainToggle: 'Rain', meteorToggle: 'Meteors', pointerControl: 'Pointer light', sceneMotionControl: 'Scene breathing', narrativeControl: 'Scroll narrative', resetAtmosphere: 'Restore defaults',
     heroIndex: 'Engineering experiments / ongoing notes', heroTitleLine1: 'Ideas, made', heroTitleLine2: 'real and runnable.',
     heroIntro: 'From embedded interfaces to spatial interaction, sensors and control to system exploration. This is where I document how projects move from questions to working answers.',
     heroAction: 'Explore all projects', githubAction: 'View source on GitHub', scrollHint: 'Scroll to explore',
