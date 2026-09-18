@@ -177,7 +177,7 @@
   }
   function updateGlass() {
     lightFrame = 0;
-    if (root.dataset.pointer === 'off') return;
+    if (root.dataset.pointer === 'off') pointer = null;
     for (const surface of document.querySelectorAll('.glass-surface')) {
       const light = surface.querySelector(':scope > .glass-light');
       if (!light) continue;
@@ -215,4 +215,5 @@
     if (!event.relatedTarget) { pointer = null; scheduleGlass(); }
   });
   window.addEventListener('scroll', scheduleGlass, {passive: true});
+  window.addEventListener('mathrix-motionchange', scheduleGlass);
 })();
