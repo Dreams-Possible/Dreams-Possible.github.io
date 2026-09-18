@@ -154,6 +154,7 @@
   if (year) year.textContent = String(new Date().getFullYear());
   setTheme(themeMode, false);
   setLocale(locale, false);
+  delete root.dataset.languagePending;
   document.getElementById('language-select')?.addEventListener('change', event => setLocale(event.target.value, true));
   document.getElementById('theme-select')?.addEventListener('change', event => setTheme(event.target.value, true));
   systemTheme.addEventListener('change', () => { if (themeMode === 'auto') setTheme('auto', false); });

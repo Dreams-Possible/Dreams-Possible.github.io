@@ -57,6 +57,7 @@ body {
   --font-heading: "IBM Plex Sans", "Noto Serif SC", serif;
 }
 body { font-family: var(--font-body); }
+:root[data-language-pending="true"] body { visibility: hidden; }
 :where(h1, h2, h3),
 .hero-title { font-family: var(--font-heading); }
 .hero-title > span { display: block; }
