@@ -3,7 +3,7 @@
   const root = document.documentElement;
   let themeMode = 'auto';
   let language = '';
-  const featureKeys = ['fog', 'rain-enabled', 'meteors-enabled', 'pointer', 'narrative'];
+  const featureKeys = {fog: 'fog', 'rain-enabled': 'rain', 'meteors-enabled': 'meteors', pointer: 'pointer', 'scene-motion': 'sceneMotion', narrative: 'narrative'};
   try {
     themeMode = localStorage.getItem('mathrix-theme') || 'auto';
     language = localStorage.getItem('mathrix-language') || '';
@@ -14,10 +14,10 @@
   root.dataset.theme = themeMode === 'auto'
     ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
     : themeMode;
-  featureKeys.forEach(key => {
+  Object.entries(featureKeys).forEach(([key, dataKey]) => {
     let value = 'on';
     try { value = localStorage.getItem(`mathrix-${key}`) === 'off' ? 'off' : 'on'; } catch (_) { /* Defaults stay on. */ }
-    root.dataset[key.replace('-enabled', '')] = value;
+    root.dataset[dataKey] = value;
   });
   root.lang = language === 'en' ? 'en' : 'zh-CN';
 })();

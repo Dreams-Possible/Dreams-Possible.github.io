@@ -353,9 +353,9 @@ body[data-page="home"] .scroll-hint { opacity: var(--hint-opacity); }
 body[data-page="home"] .discovery { margin-top: 0; border-radius: 0; background: transparent; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
 body[data-page="home"] .discovery::before { opacity: .16; }
 body[data-page="home"] .project-card { background: var(--surface-glass); }
-@keyframes scene-orbit { from { opacity: .5; transform: rotateY(61deg) rotateZ(-32deg) scale(.97); } to { opacity: .85; transform: rotateY(72deg) rotateZ(-9deg) scale(1.08); } }
-@keyframes frame-hover { from { transform: translate3d(-17px, 23px, 30px) rotateY(-16deg) rotateZ(6deg); } to { transform: translate3d(-9px, 8px, 47px) rotateY(-11deg) rotateZ(9deg); } }
-@keyframes point-breathe { from { opacity: .45; box-shadow: 0 0 0 4px var(--glow); } to { opacity: 1; box-shadow: 0 0 0 12px var(--glow); } }
+@keyframes scene-orbit { from { opacity: .45; transform: rotateY(58deg) rotateZ(-37deg) scale(.94); } to { opacity: .93; transform: rotateY(75deg) rotateZ(-4deg) scale(1.1); } }
+@keyframes frame-hover { from { transform: translate3d(-24px, 29px, 25px) rotateY(-18deg) rotateZ(5deg); } to { transform: translate3d(-4px, 1px, 60px) rotateY(-9deg) rotateZ(10deg); } }
+@keyframes point-breathe { from { opacity: .35; box-shadow: 0 0 0 4px var(--glow); } to { opacity: 1; box-shadow: 0 0 0 16px var(--glow); } }
 @media (max-width: 760px) {
   body[data-page="home"] .hero { height: auto; min-height: 0; }
   body[data-page="home"] .hero-stage { position: relative; height: auto; min-height: 0; }
@@ -390,7 +390,7 @@ body[data-page="home"] .project-card { background: var(--surface-glass); }
 .atmosphere-tuner summary { display: block; min-width: 106px; padding: 10px 15px; color: var(--text-primary); background: var(--surface-glass); border: 1px solid var(--border-subtle); border-radius: 9px; box-shadow: 0 8px 25px var(--shadow); -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); font-size: .78rem; font-weight: 700; cursor: pointer; list-style: none; }
 .atmosphere-tuner summary::-webkit-details-marker { display: none; }
 .atmosphere-tuner summary::after { content: "✦"; float: right; margin-left: 13px; color: var(--accent); }
-.atmosphere-panel { position: absolute; right: 0; bottom: calc(100% + 10px); display: grid; gap: 18px; width: 270px; padding: 20px; color: var(--text-primary); background: var(--surface-glass); border: 1px solid var(--border-subtle); border-radius: 12px; box-shadow: 0 14px 45px var(--shadow); -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px); }
+.atmosphere-panel { position: absolute; right: 0; bottom: calc(100% + 10px); display: grid; gap: 18px; width: 270px; max-height: calc(100svh - 170px); padding: 20px; overflow-y: auto; color: var(--text-primary); background: var(--surface-glass); border: 1px solid var(--border-subtle); border-radius: 12px; box-shadow: 0 14px 45px var(--shadow); -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px); }
 .atmosphere-panel label { display: grid; grid-template-columns: 1fr auto; gap: 5px 12px; align-items: center; font-size: .82rem; font-weight: 650; }
 .atmosphere-panel input { grid-column: 1 / -1; width: 100%; accent-color: var(--accent); cursor: pointer; }
 .atmosphere-panel output { color: var(--text-secondary); font-size: .75rem; }
@@ -508,6 +508,9 @@ body[data-page="home"] .scene-frame { -webkit-backdrop-filter: none; backdrop-fi
 :root[data-theme="dark"] .fog-layer { opacity: .43; }
 :root[data-fog="off"] .fog-layer,
 :root[data-pointer="off"] .glass-light { display: none; }
+:root[data-scene-motion="off"] body[data-page="home"] .scene-halo,
+:root[data-scene-motion="off"] body[data-page="home"] .frame-near,
+:root[data-scene-motion="off"] body[data-page="home"] .scene-point { animation: none; }
 :root[data-narrative="off"] body[data-page="home"] .hero { height: auto; min-height: 0; }
 :root[data-narrative="off"] body[data-page="home"] .hero-stage { position: relative; height: auto; min-height: 0; overflow: visible; }
 :root[data-narrative="off"] body[data-page="home"] .hero-layout { min-height: 0; }
