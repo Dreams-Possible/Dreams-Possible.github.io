@@ -182,11 +182,30 @@
     const discoveryIndex = document.querySelector('.discovery .section-index');
     if (!hero || reducedMotion.matches || matchMedia('(max-width: 760px)').matches) return;
     let scheduled = false;
+    let journeyGeometry = null;
+    const measureJourney = () => {
+      const available = Math.max(1, hero.offsetHeight - window.innerHeight);
+      const baseTop = title && heroCopy ? heroCopy.getBoundingClientRect().top + title.offsetTop : 0;
+      const landingScroll = hero.offsetTop + available * .62;
+      const lineHeight = titleLines?.[0]?.offsetHeight || 0;
+      const landingTop = discoveryIndex ? discoveryIndex.getBoundingClientRect().top + window.scrollY - landingScroll - lineHeight * .8 - 16 : baseTop;
+      journeyGeometry = {available, baseTop, landingScroll, landingY: landingTop - baseTop};
+    };
     const update = () => {
       scheduled = false;
-      const available = Math.max(1, hero.offsetHeight - window.innerHeight);
-      const travelled = Math.min(Math.max(window.scrollY - hero.offsetTop, 0), available);
-      const progress = travelled / available;
+      if (root.dataset.narrative === 'off') {
+        document.body.style.setProperty('--journey', '0');
+        document.body.style.setProperty('--title-journey', '0');
+        document.body.style.setProperty('--title-journey-y', '0px');
+        document.body.style.setProperty('--title-line-two-x', '0px');
+        document.body.style.setProperty('--title-line-two-y', '0px');
+        hero.classList.remove('hero-scrolled');
+        return;
+      }
+      const geometry = journeyGeometry || (measureJourney(), journeyGeometry);
+      const rawTravelled = Math.max(window.scrollY - hero.offsetTop, 0);
+      const travelled = Math.min(rawTravelled, geometry.available);
+      const progress = travelled / geometry.available;
       const titleProgress = Math.min(progress / .62, 1);
       document.body.style.setProperty('--journey', progress.toFixed(4));
       document.body.style.setProperty('--title-journey', titleProgress.toFixed(4));
@@ -199,12 +218,12 @@
         // These are independently transformed title blocks. Reserve a visible
         // block gap so their outlines never intersect at the merged endpoint.
         const joinX = range.getBoundingClientRect().width + Math.max(96, parseFloat(titleStyle.fontSize) * 1.2);
-        const baseTop = heroCopy.getBoundingClientRect().top + title.offsetTop;
-        const landingTop = discoveryIndex
-          ? discoveryIndex.getBoundingClientRect().top - titleLines[0].offsetHeight * .8 - 16
-          : baseTop;
         const landingProgress = Math.min(Math.max((progress - .28) / .34, 0), 1);
-        const titleY = (landingTop - baseTop) * landingProgress;
+        const titleY = progress < .62
+          ? geometry.landingY * landingProgress
+          : rawTravelled < geometry.available
+            ? geometry.landingY - (window.scrollY - geometry.landingScroll)
+            : geometry.landingY - (geometry.available - geometry.landingScroll + hero.offsetTop);
         document.body.style.setProperty('--title-journey-y', `${titleY}px`);
         document.body.style.setProperty('--title-line-two-x', `${joinX * titleProgress}px`);
         document.body.style.setProperty('--title-line-two-y', `${-lineHeight * titleProgress}px`);
@@ -217,7 +236,12 @@
       }
     };
     addEventListener('scroll', requestUpdate, { passive: true });
-    addEventListener('resize', requestUpdate);
+    addEventListener('resize', () => {
+      measureJourney();
+      requestUpdate();
+    });
+    addEventListener('mathrix-motionchange', requestUpdate);
+    measureJourney();
     requestUpdate();
   }
   setupHomeScrollJourney();
