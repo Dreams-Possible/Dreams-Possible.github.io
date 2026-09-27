@@ -1,6 +1,7 @@
 // Site content source. Update this file when Mathrix publishes a new project.
 // date is the latest verified GitHub pushed_at date (YYYY-MM-DD).
 window.MATHRIX_PROJECTS = [
+  {name:'PersonalSkillsCollection',date:'2026-09-27',category:'工程工具',description:{zh:'个人 AI Agent Skills 来源索引，记录上游项目、用途与许可证，不镜像源代码。',en:'A personal source index of AI agent skills, recording upstream projects, purposes, and licenses without mirroring their code.'}},
   {name:'HyperOS3AutoLTPO',date:'2026-08-24',category:'系统与设备',description:{zh:'研究小米 13 Ultra 在 HyperOS 3 下的 LTPO 刷新策略与实验 DTBO；适配范围见仓库说明。',en:'Investigates LTPO refresh policies and an experimental DTBO on Xiaomi 13 Ultra with HyperOS 3; see the repository for compatibility limits.'}},
   {name:'Python-Graphical-Application-Framework',date:'2026-08-24',category:'Web 与桌面',description:{zh:'用 Qt 计数器示例探索单向数据流、界面分层与桌面应用打包。',en:'Explores one-way data flow, UI layers, and desktop packaging through a Qt counter example.'}},
   {name:'HyperOS3EnableAOD',date:'2026-08-23',category:'系统与设备',description:{zh:'为特定 HyperOS 3 设备启用基础 AOD 的实验性模块。',en:'An experimental module enabling basic always-on display support on a specific HyperOS 3 device.'}},
@@ -8,7 +9,7 @@ window.MATHRIX_PROJECTS = [
   {name:'ASUS-UX425JA_U4700-Hackintosh',date:'2026-08-11',category:'系统与设备',description:{zh:'华硕灵耀 14 黑苹果实践，记录 ACPI、电池与亮度快捷键等问题。',en:'Hackintosh work on the ASUS ZenBook 14, documenting ACPI, battery detection, and brightness-key fixes.'}},
   {name:'SpacePlanePerspective',date:'2026-08-09',category:'Web 与桌面',description:{zh:'用视点跟踪与动态离轴透视，让普通屏幕呈现窗口式 3D 视差。',en:'Uses viewpoint tracking and dynamic off-axis projection to create window-like 3D parallax on an ordinary display.'}},
   {name:'Typing-Practice-Website',date:'2026-08-09',category:'Web 与桌面',description:{zh:'无需安装的浏览器打字训练工具，包含原始版和模块化重构版。',en:'A browser-based typing trainer with an original version and a modular refactor.'}},
-  {name:'Project-Harness',date:'2026-08-02',category:'工程工具',description:{zh:'跨项目复用的协作约定、规则和任务流程。',en:'Reusable collaboration rules, conventions, and task workflows across projects.'}},
+  {name:'Project-Harness',date:'2026-09-27',category:'工程工具',description:{zh:'跨项目复用的协作约定、规则和任务流程。',en:'Reusable collaboration rules, conventions, and task workflows across projects.'}},
   {name:'StandStartProject',date:'2026-05-18',category:'工程工具',description:{zh:'标准起点工程。',en:'A standard starter project.'}},
   {name:'LVUI',date:'2026-05-16',category:'嵌入式与控制',description:{zh:'基于 LVGL 构建锁屏、启动器、控制中心和主题等移动式界面模块。',en:'Builds mobile-style lock screen, launcher, control center, and theme modules with LVGL.'}},
   {name:'STM32Simpler',date:'2026-02-15',category:'嵌入式与控制',description:{zh:'面向 STM32 初学者的 HAL 底层驱动库；仓库说明提示停止维护。',en:'A HAL-based STM32 driver library for beginners; the repository notes that maintenance has stopped.'}},
