@@ -1,0 +1,209 @@
+/* Project archive, search, and grouped results. */
+
+.catalog-main {
+  padding-block: 64px 105px;
+}
+
+.catalog-intro {
+  position: relative;
+  min-height: 284px;
+  padding: 36px 42px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.53);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  -webkit-backdrop-filter: blur(18px) saturate(135%);
+  backdrop-filter: blur(18px) saturate(135%);
+  box-shadow:
+    0 18px 48px var(--shadow),
+    inset 0 1px rgba(255, 255, 255, 0.22);
+}
+
+.catalog-intro::after {
+  content: '';
+  position: absolute;
+  right: -10%;
+  bottom: -88%;
+  width: 72%;
+  height: 175%;
+  background-image:
+    linear-gradient(var(--scene-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--scene-line) 1px, transparent 1px);
+  background-size: 29px 29px;
+  opacity: 0.6;
+  transform: perspective(490px) rotateX(67deg) rotateZ(-23deg);
+  mask-image: linear-gradient(to top, black, transparent 88%);
+  pointer-events: none;
+}
+
+.catalog-haze {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 82% 58%, var(--glow), transparent 35%);
+  pointer-events: none;
+}
+
+.catalog-intro .section-index {
+  margin-bottom: 7px;
+}
+
+.catalog-intro h1 {
+  margin: 0;
+  font-size: clamp(2.7rem, 5vw, 4.7rem);
+  line-height: 1.2;
+  letter-spacing: -0.065em;
+}
+
+.catalog-intro > p:not(.section-index) {
+  max-width: 690px;
+  margin: 15px 0 0;
+  color: var(--text-secondary);
+}
+
+.catalog-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+  margin-top: 21px;
+  color: var(--accent-strong);
+  font-size: 0.85rem;
+  font-weight: 650;
+}
+
+.catalog-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 24px;
+  margin-top: 28px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.view-switch {
+  display: inline-flex;
+  padding: 3px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+}
+
+.view-switch button {
+  padding: 8px 16px;
+  color: var(--text-secondary);
+  background: transparent;
+  border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.view-switch button[aria-pressed='true'] {
+  color: var(--surface);
+  background: var(--accent-strong);
+}
+
+.search-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--text-secondary);
+  font-size: 0.79rem;
+  font-weight: 700;
+}
+
+.search-field input {
+  width: 280px;
+  color: var(--text-primary);
+  border-radius: 5px;
+}
+
+.catalog-group {
+  padding-top: 40px;
+}
+
+.group-heading {
+  margin: 0 0 16px;
+  font-size: 1.5rem;
+  letter-spacing: -0.04em;
+}
+
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 13px;
+}
+
+.empty-state {
+  padding: 42px 0;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 760px) {
+  .catalog-grid {
+    grid-template-columns: 1fr;
+  }
+  .catalog-main {
+    padding-block: 44px 80px;
+  }
+  .catalog-intro {
+    min-height: 0;
+    padding: 31px 29px;
+  }
+}
+
+@media (max-width: 480px) {
+  .catalog-controls {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .search-field input {
+    width: 100%;
+  }
+}
+
+.view-switch,
+.search-field input {
+  background: var(--surface-glass);
+  -webkit-backdrop-filter: blur(16px) saturate(130%);
+  backdrop-filter: blur(16px) saturate(130%);
+}
+
+.search-field {
+  padding: 7px 10px;
+  background: var(--surface-glass);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
+
+.search-field input {
+  background: transparent;
+  border: 0;
+  padding: 2px 0;
+}
+
+.search-field input:focus-visible {
+  outline-offset: 2px;
+}
+
+:root[data-theme='dark'] .catalog-intro {
+  background: rgba(24, 34, 47, 0.5);
+}
+
+.catalog-intro > .catalog-haze {
+  z-index: 0;
+  opacity: 0.35;
+}
+
+.catalog-search {
+  width: min(570px, 100%);
+  margin-top: 26px;
+  padding: 10px 16px;
+  background: var(--surface-glass);
+}
+
+.catalog-search input {
+  width: 100%;
+  min-height: 29px;
+  font-size: 0.95rem;
+}

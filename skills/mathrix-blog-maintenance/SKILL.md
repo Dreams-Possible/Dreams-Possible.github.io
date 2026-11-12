@@ -1,36 +1,52 @@
 ---
 name: mathrix-blog-maintenance
-description: Maintain Mathrix's GitHub Pages project blog when a new Dreams-Possible repository appears, a project changes, or the user asks to refresh the homepage, project archive, descriptions, or categories. Read this skill before editing project content in this repository.
+description: 维护 Mathrix 静态个人网站的项目清单和中英简介。在新增或更新项目、核对 GitHub 仓库、调整项目分类或刷新项目展示时使用。
 ---
 
-# Maintain the Mathrix project blog
+# Mathrix 项目维护
 
-## Source of truth
+## 维护入口
 
-- Public name: **Mathrix**. GitHub account: `Dreams-Possible`.
-- Project content lives in `data/projects.js`; shared interface translations live in `data/i18n.js`. `index.html` and `projects.html` render through `site.js`.
-- `CNAME` maps GitHub Pages to `mathrix.eu.org`; preserve it.
-- Homepage picks six projects with equal chance on each visit. Do not add ranking, stars, or a `featured` flag. The project page supports timeline, category, and search.
-- UI changes must follow `docs/interface-design-system.md`; the current implementation brief is `docs/site-redesign-brief.md`.
-- `docs/project-selection.md` records the historical editorial audit. Update it when changing the editorial approach, but the site data is the operational source of truth.
+- 站点署名为 `Mathrix`，GitHub 账号为 `Dreams-Possible`，`CNAME` 为 `mathrix.eu.org`。
+- 项目清单维护在 `data/projects.js`，包括名称、推送日期、分类和中英简介。项目数量由页面计算。
+- 界面文案维护在 `data/i18n.js`。HTML 正文保留空元素及 `data-i18n`、`data-i18n-aria`、`data-i18n-placeholder` 文案键，头部元信息和 `noscript` 回退说明保留静态文本。
+- 页面与模块入口见[站点维护说明](../../docs/站点维护说明.md)。涉及界面、动效或偏好行为时，先读[界面设计规范](../../docs/界面设计规范.md)。
+- 采用人工核实、手动更新项目数据的流程。首页从清单中等概率抽取六个不同项目，全部项目页支持年份、分类和搜索。
 
-## When a new project appears
+## 核对仓库
 
-1. Run `python3 scripts/check_projects.py` to compare the current public GitHub repositories against `data/projects.js`. If the API is unavailable, inspect the GitHub profile and new repository directly, then state what could not be checked.
-2. Open the new repository's README and inspect enough files to describe what it actually does. Do not invent results, performance, compatibility, or maturity. Keep limitations that the author states.
-3. Add one object to `window.MATHRIX_PROJECTS` in `data/projects.js`: exact repository `name`, `date` from GitHub `pushed_at` (`YYYY-MM-DD`), one existing `category`, and short, verified `description.zh` and `description.en` text. The file derives the URL from the repository name. Exclude this website's own repository from the public project list.
-4. For existing projects with new code pushes, refresh their `date`. Adjust their description only when the project itself changed, not because of a GitHub metadata update. Keep entries ordered from newest to oldest so the file is easy to review.
-5. Run `python3 scripts/check_projects.py` again. Verify the project appears in the archive and can appear in the homepage shuffle. Check at mobile width and ensure links resolve.
-6. Summarize which projects were added or changed, cite their repository pages, and mention any facts left uncertain.
+1. 在仓库根目录运行 `python scripts/check_projects.py`，对比本地清单与 GitHub 公开仓库。
+2. 根据输出处理新增项目 `ADD`、日期变化 `UPDATE DATE` 和需复查的仓库 `REVIEW`。改名或不可见的仓库需核对实际地址及公开状态后再调整数据。
+3. GitHub API 请求失败时，检查脚本可能仍以成功状态退出。以输出是否完成远程核对为准，必要时通过 GitHub 仓库页面补查，并在结果中注明未核实的部分。
+4. 当前脚本只获取第一页、最多 100 个仓库。结果达到页上限时，继续核对后续分页，再判断清单是否完整。
 
-## Writing and classification
+## 核实项目内容
 
-- Use a concrete one-sentence description in both languages: what the project does, with a key technology or context if useful.
-- Existing categories: `嵌入式与控制`, `系统与设备`, `Web 与桌面`, `机器人与数据`, `工程工具`. Add a category only if existing ones genuinely cannot describe the project; update site copy and checks at the same time.
-- A prototype remains a prototype. A configuration specific to one device must not be called universal. A learning record must not be sold as a finished product.
-- Do not use stars or popularity as a proxy for importance. All listed projects are equally eligible for the homepage shuffle.
-- Never add placeholder social links, unverified personal information, or generated project screenshots presented as real.
+- 阅读新增项目的 README，并检查与介绍有关的入口、配置或实现文件。
+- 用一句话说明项目做什么，以及必要的技术或使用场景。中文与英文表达相同事实，专有名称保留原名。
+- 保留原型、学习记录、停止维护、指定设备和版本等适用边界。性能、兼容性和成熟度描述需要对应证据。
+- 更新已有项目时，核对现有简介是否仍符合实现。单纯的日期或元数据变化只更新相应字段。
+- 收录与随机展示按相同标准执行，项目之间保持相同入选机会。
 
-## Quick local preview
+## 更新数据
 
-From the repository root, run `python3 -m http.server 8000`, then visit `http://localhost:8000/` and `http://localhost:8000/projects.html`. Check shuffle, timeline/category switch, search, keyboard focus, and a narrow viewport.
+在 `window.MATHRIX_PROJECTS` 数组中维护条目，沿用现有格式。
+
+```javascript
+{name:'仓库原名',date:'YYYY-MM-DD',category:'工程工具',description:{zh:'经核实的中文简介。',en:'Verified English description.'}},
+```
+
+- `name` 使用完整、准确的仓库名称，文件末尾按名称生成 GitHub 链接。本站仓库 `Dreams-Possible.github.io` 从项目清单中排除。
+- `date` 使用 GitHub `pushed_at` 的日期部分，条目按日期从新到旧排列。
+- `category` 沿用嵌入式与控制、系统与设备、Web 与桌面、机器人与数据、工程工具。新增分类时同步更新 `data/i18n.js` 和检查脚本。
+- `description.zh` 与 `description.en` 均需填写，缺失时补齐经过核实的简介。
+- 检查脚本通过正则读取现有单行格式和字段顺序。调整格式时同步修改脚本，检查解析条目数是否与实际清单一致。
+
+## 验证与交付
+
+1. 再次运行 `python scripts/check_projects.py`，处理本地格式问题和远程差异。区分本地检查通过与远程核对完成。
+2. 在仓库根目录运行 `python -m http.server 8000 --bind 127.0.0.1`，保持终端运行，通过 HTTP 访问两页。
+3. 检查全部项目页能找到新增或更新的项目，日期和中英简介正确，仓库链接有效。检查首页随机展示仍为六个不同项目，候选清单包含新增项目。
+4. 在桌面和窄屏检查搜索、年份与分类切换、换一组、语言切换和键盘焦点。语言切换保留搜索条件、当前视图和随机结果。
+5. 查看差异，确认修改集中在本次维护范围。汇总新增或更新的项目、核实来源和验证结果，注明未完成的核对。
+6. 用户要求提交时，沿用最近提交的标题、版本号和分组明细格式。推送和发布按用户当前授权执行。

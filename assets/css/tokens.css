@@ -1,0 +1,55 @@
+/* Theme colors and role-based font tokens. */
+
+:root,
+:root[data-theme='light'] {
+  color-scheme: light;
+  --canvas: #edf4f7;
+  --canvas-raised: #dceaf0;
+  --surface: #ffffff;
+  --surface-glass: rgba(255, 255, 255, 0.74);
+  --text-primary: #0e293a;
+  --text-secondary: #4c6676;
+  --border-subtle: #bbd1db;
+  --border-active: #3b99ac;
+  --accent: #1c7890;
+  --accent-strong: #0d5872;
+  --accent-soft: #c8eef0;
+  --shadow: rgba(18, 72, 94, 0.13);
+  --glow: rgba(44, 166, 188, 0.25);
+  --hero-top: #e7f1f5;
+  --hero-bottom: #cfe5eb;
+  --scene-line: rgba(34, 117, 146, 0.44);
+  --scene-glass: rgba(233, 251, 251, 0.24);
+  --selection: #b7ebea;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --canvas: #090d14;
+  --canvas-raised: #111925;
+  --surface: #1b2735;
+  --surface-glass: rgba(25, 36, 50, 0.72);
+  --text-primary: #f1f6fb;
+  --text-secondary: #aebdcb;
+  --border-subtle: #3a4b60;
+  --border-active: #90c8e4;
+  --accent: #99d4ee;
+  --accent-strong: #c5e9fb;
+  --accent-soft: #254255;
+  --shadow: rgba(0, 3, 9, 0.47);
+  --glow: rgba(93, 161, 207, 0.22);
+  --hero-top: #131d2a;
+  --hero-bottom: #090d14;
+  --scene-line: rgba(141, 189, 221, 0.48);
+  --scene-glass: rgba(145, 194, 229, 0.055);
+  --selection: #335670;
+}
+
+:root {
+  --font-body: 'Inter', 'Noto Sans SC', sans-serif;
+  --font-heading: 'IBM Plex Sans', 'Noto Serif SC', serif;
+}
+
+:root[data-language-pending='true'] body {
+  visibility: hidden;
+}

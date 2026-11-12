@@ -1,34 +1,202 @@
 <!doctype html>
 <html lang="zh-CN">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="按时间线或分类浏览 Mathrix 的全部公开项目。">
-  <meta property="og:title" content="全部项目 — Mathrix">
-  <title>全部项目 — Mathrix</title>
-  <script src="theme-init.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@500;600;700&family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Serif+SC:wght@600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
-  <script defer src="data/projects.js"></script>
-  <script defer src="data/i18n.js"></script>
-  <script defer src="site.js"></script>
-  <script defer src="effects.js"></script>
-</head>
-<body data-page="projects">
-  <div class="ambient-world" aria-hidden="true"><div class="fog-layer fog-cyan"></div><div class="fog-layer fog-secondary"></div><canvas class="weather-canvas" aria-hidden="true"></canvas></div>
-  <a class="skip-link" href="#main" data-i18n="skip">跳到正文</a>
-  <header class="site-header glass-surface"><div class="shell header-inner"><a class="wordmark" href="index.html" aria-label="Mathrix 首页" data-i18n-aria="homeAria">Mathrix<span aria-hidden="true">.</span></a><nav class="main-nav" aria-label="主导航" data-i18n-aria="navLabel"><a href="index.html" data-i18n="navHome">首页</a><a href="projects.html" aria-current="page" data-i18n="navProjects">全部项目</a><a href="https://github.com/Dreams-Possible" target="_blank" rel="noopener noreferrer">GitHub ↗</a></nav><div class="preferences"><div class="preference-item"><label for="language-select">Language</label><select id="language-select" class="preference-select" aria-label="Language"><option value="zh">中文</option><option value="en">English</option></select></div><div class="preference-item"><label for="theme-select">Theme</label><select id="theme-select" class="preference-select theme-select" aria-label="Theme"><option value="auto" data-i18n="themeAuto">跟随系统</option><option value="light" data-i18n="themeLight">浅色</option><option value="dark" data-i18n="themeDark">深色</option></select></div></div></div></header>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="按时间线或分类浏览 Mathrix 的全部公开项目。"
+    />
+    <meta property="og:title" content="全部项目 — Mathrix" />
+    <title>全部项目 — Mathrix</title>
+    <script src="assets/js/theme-init.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@500;600;700&family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Serif+SC:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="assets/js/main.js"></script>
+  </head>
+  <body data-page="projects">
+    <div class="ambient-world" aria-hidden="true">
+      <div class="fog-layer fog-cyan"></div>
+      <div class="fog-layer fog-secondary"></div>
+      <canvas class="weather-canvas" aria-hidden="true"></canvas>
+    </div>
+    <a class="skip-link" href="#main" data-i18n="skip"></a>
+    <header class="site-header glass-surface">
+      <div class="shell header-inner">
+        <a class="wordmark" href="index.html" data-i18n-aria="homeAria"
+          ><span data-i18n="brandName"></span
+          ><span aria-hidden="true">.</span></a
+        >
+        <nav class="main-nav" data-i18n-aria="navLabel">
+          <a href="index.html" data-i18n="navHome"></a
+          ><a
+            href="projects.html"
+            aria-current="page"
+            data-i18n="navProjects"
+          ></a
+          ><a
+            href="https://github.com/Dreams-Possible"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-i18n="githubLink"
+          ></a>
+        </nav>
+        <div class="preferences">
+          <div class="preference-item">
+            <label for="language-select" data-i18n="languageLabel"></label>
+            <select
+              id="language-select"
+              class="preference-select"
+              data-i18n-aria="languageLabel"
+            >
+              <option value="zh" data-i18n="languageChinese"></option>
+              <option value="en" data-i18n="languageEnglish"></option>
+            </select>
+          </div>
+          <div class="preference-item">
+            <label for="theme-select" data-i18n="themeLabel"></label>
+            <select
+              id="theme-select"
+              class="preference-select theme-select"
+              data-i18n-aria="themeLabel"
+            >
+              <option value="auto" data-i18n="themeAuto"></option>
+              <option value="light" data-i18n="themeLight"></option>
+              <option value="dark" data-i18n="themeDark"></option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </header>
 
-  <main id="main" class="shell catalog-main">
-    <div class="catalog-intro glass-surface"><div class="catalog-haze" aria-hidden="true"></div><p class="section-index" data-i18n="catalogIndex">项目档案</p><h1 data-i18n="catalogTitle">全部项目。</h1><p data-i18n="catalogIntro">每个项目都有自己的起点。按时间或领域浏览，找到想深入了解的方向。</p><div class="catalog-summary"><span><strong id="catalog-count">46</strong> <span data-i18n="projectUnit">个项目</span></span><span id="catalog-updated"></span></div><label class="search-field catalog-search glass-surface"><span data-i18n="searchLabel">搜索项目</span><input id="project-search" type="search" placeholder="名称或简介" data-i18n-placeholder="searchPlaceholder" autocomplete="off"></label></div>
-    <div class="catalog-controls"><div class="view-switch glass-surface" role="group" aria-label="浏览方式" data-i18n-aria="viewLabel"><button type="button" data-view="timeline" aria-pressed="true" data-i18n="timeline">时间线</button><button type="button" data-view="category" aria-pressed="false" data-i18n="categoryView">按分类</button></div></div>
-    <div id="project-list" class="project-list"></div><span id="catalog-status" class="sr-only" role="status" aria-live="polite"></span>
-    <noscript><p class="no-script">项目列表需要 JavaScript。你仍可在 <a href="https://github.com/Dreams-Possible?tab=repositories">GitHub 仓库列表</a>浏览全部项目。</p></noscript>
-  </main>
+    <main id="main" class="shell catalog-main">
+      <div class="catalog-intro glass-surface">
+        <div class="catalog-haze" aria-hidden="true"></div>
+        <p class="section-index" data-i18n="catalogIndex"></p>
+        <h1 data-i18n="catalogTitle"></h1>
+        <p data-i18n="catalogIntro"></p>
+        <div class="catalog-summary">
+          <span
+            ><strong id="catalog-count"></strong>
+            <span data-i18n="projectUnit"></span></span
+          ><span id="catalog-updated"></span>
+        </div>
+        <label class="search-field catalog-search glass-surface"
+          ><span data-i18n="searchLabel"></span
+          ><input
+            id="project-search"
+            type="search"
+            data-i18n-placeholder="searchPlaceholder"
+            autocomplete="off"
+        /></label>
+      </div>
+      <div class="catalog-controls">
+        <div
+          class="view-switch glass-surface"
+          role="group"
+          data-i18n-aria="viewLabel"
+        >
+          <button
+            type="button"
+            data-view="timeline"
+            aria-pressed="true"
+            data-i18n="timeline"
+          ></button
+          ><button
+            type="button"
+            data-view="category"
+            aria-pressed="false"
+            data-i18n="categoryView"
+          ></button>
+        </div>
+      </div>
+      <div id="project-list" class="project-list"></div>
+      <span
+        id="catalog-status"
+        class="sr-only"
+        role="status"
+        aria-live="polite"
+      ></span>
+      <noscript>
+        <p class="no-script">
+          项目列表需要 JavaScript。你仍可在
+          <a href="https://github.com/Dreams-Possible?tab=repositories"
+            >GitHub 仓库列表</a
+          >浏览全部项目。
+        </p>
+      </noscript>
+    </main>
 
-  <details class="atmosphere-tuner"><summary class="glass-surface" data-i18n="atmosphere">氛围</summary><div class="atmosphere-panel glass-surface"><label class="toggle-control"><span data-i18n="fogControl">雾气</span><input id="fog-enabled" type="checkbox" role="switch" checked></label><label class="toggle-control"><span data-i18n="rainToggle">雨滴</span><input id="rain-enabled" type="checkbox" role="switch" checked></label><label><span data-i18n="rainControl">雨量</span><input id="rain-density" type="range" min="0" max="100" value="50"><output id="rain-value" for="rain-density">50%</output></label><label class="toggle-control"><span data-i18n="meteorToggle">流星</span><input id="meteors-enabled" type="checkbox" role="switch" checked></label><label><span data-i18n="meteorControl">流星频率</span><input id="meteor-rate" type="range" min="0" max="100" value="50"><output id="meteor-value" for="meteor-rate">50%</output></label><label class="toggle-control"><span data-i18n="pointerControl">指针光场</span><input id="pointer-enabled" type="checkbox" role="switch" checked></label><label class="toggle-control"><span data-i18n="sceneMotionControl">线框呼吸</span><input id="scene-motion-enabled" type="checkbox" role="switch" checked></label><label class="toggle-control"><span data-i18n="narrativeControl">滚动叙事</span><input id="narrative-enabled" type="checkbox" role="switch" checked></label><button class="atmosphere-reset" id="reset-atmosphere" type="button" data-i18n="resetAtmosphere">恢复默认</button></div></details>
-  <footer class="site-footer glass-surface"><div class="shell footer-inner"><span>© <span id="year"></span> Mathrix</span><a href="index.html" data-i18n="backHome">返回首页</a></div></footer>
-</body>
+    <details class="atmosphere-tuner">
+      <summary class="glass-surface">
+        <span data-i18n="atmosphere"></span>
+      </summary>
+      <div class="atmosphere-panel glass-surface">
+        <label class="toggle-control"
+          ><span data-i18n="fogControl"></span
+          ><input id="fog-enabled" type="checkbox" role="switch" checked
+        /></label>
+        <label class="toggle-control"
+          ><span data-i18n="rainToggle"></span
+          ><input id="rain-enabled" type="checkbox" role="switch" checked
+        /></label>
+        <label
+          ><span data-i18n="rainControl"></span
+          ><input
+            id="rain-density"
+            type="range"
+            min="0"
+            max="100"
+            value="50" /><output id="rain-value" for="rain-density"></output
+        ></label>
+        <label class="toggle-control"
+          ><span data-i18n="meteorToggle"></span
+          ><input id="meteors-enabled" type="checkbox" role="switch" checked
+        /></label>
+        <label
+          ><span data-i18n="meteorControl"></span
+          ><input
+            id="meteor-rate"
+            type="range"
+            min="0"
+            max="100"
+            value="50" /><output id="meteor-value" for="meteor-rate"></output
+        ></label>
+        <label class="toggle-control"
+          ><span data-i18n="pointerControl"></span
+          ><input id="pointer-enabled" type="checkbox" role="switch" checked
+        /></label>
+        <label class="toggle-control"
+          ><span data-i18n="sceneMotionControl"></span
+          ><input
+            id="scene-motion-enabled"
+            type="checkbox"
+            role="switch"
+            checked
+        /></label>
+        <label class="toggle-control"
+          ><span data-i18n="narrativeControl"></span
+          ><input id="narrative-enabled" type="checkbox" role="switch" checked
+        /></label>
+        <button
+          class="atmosphere-reset"
+          id="reset-atmosphere"
+          type="button"
+          data-i18n="resetAtmosphere"
+        ></button>
+      </div>
+    </details>
+    <footer class="site-footer glass-surface">
+      <div class="shell footer-inner">
+        <span
+          >© <span id="year"></span> <span data-i18n="brandName"></span></span
+        ><a href="index.html" data-i18n="backHome"></a>
+      </div>
+    </footer>
+  </body>
 </html>

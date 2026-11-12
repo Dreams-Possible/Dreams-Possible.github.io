@@ -1,6 +1,12 @@
-"""Generate the two static, translucent fog textures used by the site.
+"""手动生成网页使用的两张半透明雾纹理。
 
-Run manually with Pillow installed; there is no runtime or site build dependency.
+先安装依赖 python -m pip install Pillow，再在仓库根目录运行
+python scripts/generate_fog.py。脚本在本地生成 960×600 的 WebP 图片，
+写入并覆盖 assets/fog-cyan.webp 和 assets/fog-secondary.webp。
+
+网页通过 assets/css/effects.css 加载生成的图片，浏览器不执行此脚本。
+仅调整雾纹理时需要重新运行，普通预览和项目维护直接使用现有图片。
+生成过程无需联网，不修改项目清单，也不提交或发布网站。
 """
 
 from pathlib import Path

@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
-"""Check Mathrix project data against the public GitHub repository list."""
+"""手动核对站点项目数据与 GitHub 公开仓库。
+
+在仓库根目录运行 python scripts/check_projects.py，仅使用 Python 标准库。
+读取 data/projects.js，检查重复名称、日期格式、分类和中英简介，再查询
+Dreams-Possible 的公开仓库，输出待新增、日期变化及需复查的项目。
+脚本仅输出差异，不修改文件，也不提交或发布网站。
+
+GitHub 核对需要联网，目前只查询第一页，最多 100 个仓库。
+发现本地错误或远程差异时退出码为 1，否则为 0。网络请求失败会打印提示，
+此时若本地检查通过，退出码仍为 0，因此需同时查看终端输出。
+"""
 import json
 import re
 import sys
